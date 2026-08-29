@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="fr-BE">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Évaluation — Achats, ventes, financiers et opérations diverses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0f172a; --navy-light:#1e293b; --slate:#334155; --slate-mid:#64748b; --slate-light:#94a3b8;
+  --blue:#2563eb; --blue-light:#3b82f6; --blue-pale:#dbeafe; --blue-bg:#eff6ff;
+  --green:#16a34a; --green-pale:#dcfce7; --red:#dc2626; --red-pale:#fee2e2;
+  --orange:#ea580c; --orange-pale:#fff7ed;
+  --white:#ffffff; --gray-50:#f8fafc; --gray-100:#f1f5f9; --gray-200:#e2e8f0; --gray-300:#cbd5e1;
+  --font-body:'Plus Jakarta Sans',sans-serif; --font-mono:'JetBrains Mono',monospace;
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.05);
+  --shadow:0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+  --radius:8px; --radius-lg:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--gray-50);color:var(--navy);line-height:1.6;-webkit-text-size-adjust:100%}
+.screen{display:none}
+.screen.active{display:block}
+
+/* ---------- HEADER ---------- */
+.header{position:sticky;top:0;z-index:50;background:var(--white);border-bottom:1px solid var(--gray-200);box-shadow:var(--shadow-sm)}
+.header-in{max-width:960px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.header-title{font-size:15px;font-weight:800;color:var(--navy);letter-spacing:-.2px}
+.header-sub{font-size:12px;color:var(--slate-mid);font-weight:500}
+.header-spacer{flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:var(--gray-100);
+  border:1px solid var(--gray-200);font-size:12.5px;font-weight:600;color:var(--slate);white-space:nowrap}
+.chip.mono{font-family:var(--font-mono)}
+.progress-outer{height:4px;background:var(--gray-200)}
+.progress-inner{height:100%;background:var(--blue);width:0;transition:width .4s ease}
+
+/* ---------- LAYOUT ---------- */
+.wrap{max-width:960px;margin:0 auto;padding:28px 20px 60px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1.25}
+h2{font-size:19px;font-weight:700;letter-spacing:-.2px}
+h3{font-size:15px;font-weight:700}
+p{font-size:15px}
+.card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:26px;box-shadow:var(--shadow)}
+.card + .card{margin-top:18px}
+.muted{color:var(--slate-mid);font-size:14px}
+
+/* ---------- LOGIN ---------- */
+.login-wrap{max-width:640px;margin:0 auto;padding:44px 20px}
+.brandline{display:inline-block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--blue);background:var(--blue-bg);border:1px solid var(--blue-pale);padding:5px 12px;border-radius:999px;margin-bottom:16px}
+.field{margin-top:20px}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--slate);margin-bottom:7px}
+.text-input{width:100%;padding:13px 15px;border:2px solid var(--gray-200);border-radius:var(--radius);
+  font-family:var(--font-body);font-size:15px;color:var(--navy);outline:none;transition:border-color .15s;background:var(--white)}
+.text-input:focus{border-color:var(--blue)}
+.consignes{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);padding:18px 20px;margin-top:22px}
+.consignes h3{margin-bottom:10px}
+.consignes ul{margin:0;padding-left:20px}
+.consignes li{font-size:14px;color:var(--slate);margin-bottom:6px}
+.consignes li:last-child{margin-bottom:0}
+
+/* ---------- BOUTONS ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;border:none;
+  border-radius:var(--radius);font-family:var(--font-body);font-size:15px;font-weight:700;cursor:pointer;transition:.15s}
+.btn-primary{background:var(--blue);color:var(--white);box-shadow:var(--shadow-sm)}
+.btn-primary:hover{background:#1d4ed8}
+.btn-primary:disabled{background:var(--gray-300);cursor:not-allowed}
+.btn-ghost{background:var(--white);color:var(--slate);border:1.5px solid var(--gray-200)}
+.btn-ghost:hover{border-color:var(--gray-300);background:var(--gray-50)}
+.btn-block{width:100%;margin-top:24px}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;align-items:center}
+
+/* ---------- QUESTIONS ---------- */
+.q-num{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue)}
+.q-partie{font-size:13px;font-weight:700;color:var(--navy);margin-top:4px}
+.q-text{font-size:16.5px;font-weight:600;line-height:1.5;margin-top:14px;color:var(--navy)}
+.q-points{float:right;font-size:12.5px;font-weight:700;color:var(--slate-mid);background:var(--gray-100);
+  border-radius:999px;padding:4px 11px}
+
+.qcm-list{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+.qcm-option{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:2px solid var(--gray-200);
+  border-radius:var(--radius);cursor:pointer;transition:.14s;background:var(--white);font-size:15px;line-height:1.5}
+.qcm-option:hover{border-color:var(--blue-light);background:var(--blue-bg)}
+.qcm-option.selected{border-color:var(--blue);background:var(--blue-bg)}
+.qcm-option.locked{cursor:not-allowed;opacity:.75}
+.qcm-option.locked:hover{border-color:var(--gray-200);background:var(--white)}
+.qcm-option.selected.locked{border-color:var(--blue);background:var(--blue-bg);opacity:1}
+.qcm-letter{flex:0 0 26px;height:26px;border-radius:50%;background:var(--gray-100);color:var(--slate);
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:var(--font-mono)}
+.qcm-option.selected .qcm-letter{background:var(--blue);color:var(--white)}
+
+/* ---------- DOCUMENTS ---------- */
+.doc{background:var(--white);border:1px solid var(--gray-300);border-radius:var(--radius);
+  margin-top:16px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.doc-head{background:var(--navy-light);color:var(--white);font-size:12px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;padding:8px 14px}
+.doc-body{padding:16px 18px;font-size:13.5px;line-height:1.55}
+.doc-parties{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:14px}
+.doc-party{font-size:12.5px;line-height:1.45}
+.doc-party.right{text-align:right;margin-left:auto}
+.doc-party-lab{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--slate-light);margin-bottom:3px}
+.doc-party-name{font-weight:800;color:var(--navy);font-size:13.5px}
+.doc-tva{font-family:var(--font-mono);font-size:11.5px;color:var(--slate-mid);margin-top:2px}
+.doc-tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+.doc-tbl th{background:var(--gray-100);color:var(--slate);font-weight:700;text-align:left;padding:6px 8px;border:1px solid var(--gray-200)}
+.doc-tbl td{padding:6px 8px;border:1px solid var(--gray-200)}
+.doc-tbl .num{text-align:right;font-family:var(--font-mono)}
+.doc-tbl tr.tot td{background:var(--gray-50);font-weight:800}
+.doc-tbl tr.pay td{background:var(--blue-bg);font-weight:800;color:var(--navy)}
+.doc-meta{display:flex;gap:22px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:var(--slate)}
+.doc-meta b{color:var(--navy)}
+.doc-legal{margin-top:12px;padding:9px 12px;background:var(--orange-pale);border-left:3px solid var(--orange);
+  font-size:12px;color:var(--slate);line-height:1.5}
+.doc-note{font-size:14px;line-height:1.6;color:var(--slate)}
+.doc-note b{color:var(--navy)}
+
+/* ---------- ÉCRITURE ---------- */
+.journal-block{margin:18px 0 14px}
+.journal-block label{display:block;font-size:13px;font-weight:600;color:var(--slate);margin-bottom:6px}
+.journal-select{padding:10px 14px;border:2px solid var(--gray-200);border-radius:var(--radius);
+  font-family:var(--font-body);font-size:14px;font-weight:500;color:var(--navy);outline:none;background:#fff;min-width:340px;cursor:pointer}
+.journal-select.err{border-color:var(--red);background:var(--red-pale)}
+.journal-select.good{border-color:var(--green);background:var(--green-pale)}
+.entry-table{width:100%;border-collapse:collapse;margin-top:6px}
+.entry-table th{background:var(--navy-light);color:var(--white);font-size:12px;font-weight:600;text-align:left;padding:9px 10px}
+.entry-table th.r{text-align:right}
+.entry-table td{border:1px solid var(--gray-200);padding:6px 7px;vertical-align:middle}
+.entry-table input{width:100%;padding:9px 10px;border:2px solid var(--gray-200);border-radius:6px;
+  font-family:var(--font-mono);font-size:14px;color:var(--navy);outline:none;background:#fff}
+.entry-table input:focus{border-color:var(--blue)}
+.entry-table input.err{border-color:var(--red);background:var(--red-pale)}
+.entry-table input.good{border-color:var(--green);background:var(--green-pale)}
+.entry-table input.num{text-align:right}
+.entry-table col.c-acc{width:15%} .entry-table col.c-decl{width:12%} .entry-table col.c-code{width:15%}
+.entry-table col.c-amt{width:19%}
+.entry-hint{font-size:12.5px;color:var(--slate-mid);margin-top:10px;line-height:1.55}
+.totline{display:flex;gap:26px;justify-content:flex-end;margin-top:10px;font-size:13px;font-weight:700;color:var(--slate-mid);font-family:var(--font-mono)}
+
+/* ---------- FEEDBACK ---------- */
+.feedback{margin-top:20px;padding:14px 18px;border-radius:var(--radius);font-size:14.5px;font-weight:600;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:var(--green-pale);border:1px solid var(--green);color:#15803d}
+.feedback.ko{background:var(--red-pale);border:1px solid var(--red);color:#b91c1c}
+.feedback.neutral{background:var(--orange-pale);border:1px solid var(--orange);color:#c2410c}
+.feedback ul{margin:8px 0 0 18px;font-weight:500;font-size:14px}
+.feedback li{margin-bottom:3px}
+.attempts{font-size:12.5px;color:var(--slate-mid);font-weight:600}
+
+/* ---------- TRANSITION / RÉSULTAT ---------- */
+.center{text-align:center}
+.big-icon{font-size:44px;line-height:1;margin-bottom:14px}
+.score-block{display:flex;gap:16px;flex-wrap:wrap;margin-top:26px}
+.score-box{flex:1 1 180px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:20px;text-align:center}
+.score-box .label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--slate-mid)}
+.score-box .value{font-size:26px;font-weight:800;color:var(--navy);font-family:var(--font-mono);margin-top:8px}
+.score-total{background:var(--blue-bg);border-color:var(--blue-pale)}
+.score-hero{display:flex;align-items:baseline;justify-content:center;gap:8px;margin-top:20px}
+.score-hero .score-val{font-size:56px;font-weight:800;color:var(--blue);font-family:var(--font-mono);line-height:1}
+.score-hero .score-max{font-size:24px;font-weight:700;color:var(--slate-light);font-family:var(--font-mono)}
+.error-msg{color:var(--red);font-size:14px;font-weight:600;margin-top:14px;display:none}
+.error-msg.show{display:block}
+
+/* ---------- IMPRESSION ---------- */
+#printArea{display:none}
+.pr-h1{font-size:19px;font-weight:800;color:#000;margin-bottom:2px}
+.pr-sub{font-size:12px;color:#444;margin-bottom:10px}
+.pr-id{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:14px}
+.pr-id td{border:1px solid #999;padding:5px 8px}
+.pr-id td.k{background:#eee;font-weight:700;width:22%}
+.pr-item{margin-top:16px;page-break-inside:avoid;border:1px solid #999}
+.pr-item-h{background:#eee;padding:6px 9px;font-size:12.5px;font-weight:800;display:flex;justify-content:space-between;gap:10px}
+.pr-item-b{padding:9px}
+.pr-badge{font-size:11px;font-weight:800;padding:1px 7px;border:1px solid #000;border-radius:3px;white-space:nowrap}
+.pr-tbl{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:6px}
+.pr-tbl th{background:#333;color:#fff;padding:4px 6px;text-align:left;font-size:11px}
+.pr-tbl td{border:1px solid #999;padding:4px 6px}
+.pr-tbl .num{text-align:right;font-family:monospace}
+.pr-note{font-size:11.5px;color:#333;margin-top:5px}
+
+@media print{
+  body{background:#fff}
+  .header,.screen,.no-print{display:none !important}
+  #printArea{display:block !important;padding:0;max-width:none}
+  .doc{box-shadow:none;border-color:#999}
+  .doc-head{background:#333 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .doc-tbl th,.doc-tbl tr.tot td,.doc-tbl tr.pay td{background:#eee !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pr-item-h,.pr-tbl th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  @page{size:A4;margin:14mm}
+}
+
+@media (max-width:680px){
+  .wrap{padding:20px 14px 50px}
+  .card{padding:18px}
+  h1{font-size:22px}
+  .entry-table th,.entry-table td{padding:5px 4px}
+  .entry-table input{font-size:13px;padding:8px 6px}
+  .journal-select{min-width:100%}
+  .doc-party.right{text-align:left;margin-left:0}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================ HEADER ============================================================ -->
+<div class="header" id="mainHeader" style="display:none">
+  <div class="header-in">
+    <div>
+      <div class="header-title">Achats, ventes, financiers et opérations diverses — OUTISUD</div>
+      <div class="header-sub" id="hdrEmail"></div>
+    </div>
+    <div class="header-spacer"></div>
+    <div class="chip mono" id="hdrTimer">00:00:00</div>
+  </div>
+  <div class="progress-outer"><div class="progress-inner" id="progBar"></div></div>
+</div>
+
+<!-- ============================================================ 1 — LOGIN ============================================================ -->
+<div class="screen active" id="screenLogin">
+  <div class="login-wrap">
+    <div class="card">
+      <div class="brandline">Institut Saint-Luc Frameries — 6TQ Co</div>
+      <h1>Évaluation — préimputations et Popsy</h1>
+      <p class="muted" style="margin-top:8px">Achats, ventes, financiers et opérations diverses — dossier OUTISUD, juin 2026</p>
+
+      <div class="field">
+        <label for="emailInput">Adresse email scolaire</label>
+        <input type="email" id="emailInput" class="text-input" placeholder="prenom.nom@istlm.org" autocomplete="email">
+        <div class="muted" style="margin-top:7px;font-size:13px">Ton nom et ton prénom en sont déduits automatiquement pour le document à imprimer.</div>
+      </div>
+
+      <div class="consignes">
+        <h3>Consignes</h3>
+        <ul>
+          <li><strong>Partie 1 — Questions générales (12 pts) :</strong> 6 questions sur l'ensemble de la matière, 2 points chacune. <strong>Une seule tentative</strong>, sans indication d'erreur.</li>
+          <li><strong>Partie 2 — Préimputations (28 pts) :</strong> les 16 écritures du dossier. <strong>Autant de tentatives que tu veux</strong> : l'application te signale la ligne et la colonne où se trouve l'erreur, mais jamais la bonne réponse.</li>
+          <li>Montants : point ou virgule acceptés, pas de séparateur de milliers. Comptes à 4 chiffres.</li>
+          <li>Les colonnes <strong>Décl. T.V.A.</strong> et <strong>Code Popsy</strong> font partie de la réponse dans les journaux d'achat et de vente. Laisse-les vides là où elles ne s'appliquent pas.</li>
+          <li>À la fin, tu pourras <strong>imprimer les documents et tes écritures</strong> : c'est ce document qui te servira pour l'encodage dans Popsy.</li>
+          <li>L'évaluation ne peut être réalisée <strong>qu'une seule fois</strong>.</li>
+        </ul>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="startBtn">Commencer l'évaluation</button>
+      <div class="error-msg" id="loginError"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ 2 — DÉJÀ RÉALISÉE ============================================================ -->
+<div class="screen" id="screenDone">
+  <div class="login-wrap">
+    <div class="card center">
+      <div class="big-icon">🔒</div>
+      <h2>Évaluation déjà réalisée</h2>
+      <p class="muted" style="margin-top:12px">Cette évaluation a déjà été complétée avec cette adresse email. Elle ne peut être réalisée qu'une seule fois.</p>
+      <p class="muted" style="margin-top:12px">En cas de problème, adresse-toi à ton professeur.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ 2bis — VERROU FERMÉ ============================================================ -->
+<div class="screen" id="screenLocked">
+  <div class="login-wrap">
+    <div class="card center">
+      <div class="big-icon">🔒</div>
+      <h2>Évaluation non disponible</h2>
+      <p class="muted" style="margin-top:12px">L'évaluation n'est pas ouverte actuellement.<br>Attends les consignes de ton professeur.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ 3 — QUIZ ============================================================ -->
+<div class="screen" id="screenQuiz"><div class="wrap"><div class="card" id="quizCard"></div></div></div>
+
+<!-- ============================================================ 4 — TRANSITION ============================================================ -->
+<div class="screen" id="screenTransition">
+  <div class="wrap">
+    <div class="card center">
+      <div class="big-icon">📑</div>
+      <h2>Partie 1 terminée</h2>
+      <p class="muted" style="margin-top:12px">Place à la partie pratique : <strong>16 écritures</strong> à préimputer, 28 points.</p>
+      <div class="consignes" style="text-align:left">
+        <h3>Ce qui change dans cette partie</h3>
+        <ul>
+          <li>Tu peux <strong>corriger autant de fois que tu veux</strong> jusqu'à trouver l'écriture juste.</li>
+          <li>À chaque essai, l'application <strong>encadre en rouge</strong> ce qui ne va pas — journal, compte, grille, code ou montant — sans te donner la réponse.</li>
+          <li>Commence toujours par le <strong>journal</strong> : il fait partie de la réponse.</li>
+          <li>Tu peux passer une écriture, mais elle vaudra 0 point.</li>
+        </ul>
+      </div>
+      <button class="btn btn-primary" id="toExBtn" style="margin-top:26px">Commencer les préimputations</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ 5 — EXERCICES ============================================================ -->
+<div class="screen" id="screenExercise"><div class="wrap"><div class="card" id="exCard"></div></div></div>
+
+<!-- ============================================================ 6 — RÉSULTAT ============================================================ -->
+<div class="screen" id="screenSummary">
+  <div class="wrap">
+    <div class="card center">
+      <div class="big-icon">🎓</div>
+      <h2>Évaluation terminée</h2>
+      <p class="muted" style="margin-top:10px">Tes réponses ont été enregistrées.</p>
+      <div class="score-hero">
+        <div class="score-val" id="totalScore">0</div>
+        <div class="score-max" id="totalMax">/ 40</div>
+      </div>
+      <div class="score-block">
+        <div class="score-box"><div class="label">Questions générales</div><div class="value" id="quizScore">0/12</div></div>
+        <div class="score-box"><div class="label">Préimputations</div><div class="value" id="exScore">0/28</div></div>
+        <div class="score-box score-total"><div class="label">Temps total</div><div class="value" id="totalTime">00:00:00</div></div>
+      </div>
+      <div class="consignes" style="text-align:left">
+        <h3>Étape suivante — l'encodage dans Popsy</h3>
+        <ul id="ulPopsy"></ul>
+      </div>
+      <button class="btn btn-primary" id="printBtn" style="margin-top:24px">🖨️ Imprimer les documents et mes écritures</button>
+      <p class="muted" style="margin-top:14px">La correction détaillée sera réalisée en classe avec ton professeur.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ ZONE D'IMPRESSION ============================================================ -->
+<div id="printArea"></div>
+
+<script>
+// ============================================================
+// CONFIGURATION
+// ============================================================
+const CONFIG = {
+  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzff9KEtrF9aH2ajzRvpPmePXDjOzLeOjrqpxJRO5uSKsfAMlY24A39eWO2tXBvO-eu/exec',
+  APP_NAME: 'Preimputations OUTISUD 2026',
+  NB_QUIZ: 6,
+  NB_EXERCICES: 16,
+  POINTS_QUIZ: 12,
+  POINTS_EXERCICES: 28,
+  POINTS_MAX: 40
+};
+
+const STATE = {
+  email: '', nom: '', prenom: '', classe: '', session: '',
+  timerInterval: null, startTime: null, elapsed: 0,
+  currentQuiz: 0, currentEx: 0,
+  quizPoints: 0, exPoints: 0,
+  quizAnswered: Array(CONFIG.NB_QUIZ).fill(false),
+  exAnswered: Array(CONFIG.NB_EXERCICES).fill(false),
+  exAttempts: Array(CONFIG.NB_EXERCICES).fill(0),
+  exResult: Array(CONFIG.NB_EXERCICES).fill(null),   // 'ok' | 'skip'
+  exSaisie: Array(CONFIG.NB_EXERCICES).fill(null),   // dernière saisie, pour l'impression
+  questionStartTime: 0
+};
+
+// ============================================================
+// DONNÉES CHIFFRÉES (AES-256-GCM) — déchiffrées après authentification
+// Les fiches des tiers sont incluses dans le document de chaque écriture.
+// ============================================================
+const CONSIGNES_UL_ENC = '1MKsUrcwywkKJ1Wt.pR8H6ygh46rOsMhw+Seegj5R8/4C8tCJolPy6x0Wvnm0EaBarqzdKpOI/zTbyBccS9v9rQgfgHoPbjJr3iMKPBOzu3fsyvU8AhIxBpSb5i2jnGCslHDG94IiD65qlizdL4gaZ7tQTcjNXQXOniw9Qb00Ukl/xRPo8oaYlPtHM5oWiHYvD7hRGMRGG8125C23jO6XkV6UD4rl7pRqqXlZchtoDd1bm2NfvPVLQZistrBX64p5JwBSTX3iGGZZHYK5W2lmxTyXxRTEs8FOeRIsppDhGMQHwkwFxjvaOqSKRFAncGPdRBe+jU8HkDUu/H9uj/J3K4fT4ZoR8rwhJ7cY/5VQlExxyz8rbWIE1p+XnoQTHxAoO15ebXFi+4H+RP6xaR9y7Ok1citxAomoZJJ7Hb0qE8A5naBTRTcMBDV1up0JDzzai4WKYha5liop7Vycb/7anoCtgL5GxB1tYIq2fX21T+ENrM4YgIBxTbMMHh886HBsBI5hzdGoPtjP+Y/dDlm+aFaIiruyQK+Z8ZKpDH6qCtfO3R9Z1d68y+CU29rvUqJGXzn5O81O389JciyX9fEKHIDx0d83PYR4aIuBSakTGxdYWnFI04KYJw3CfDAlIMbgKr5K8oix7dHRgOh8pB9VDmsYmYNhDBmznXAxLl1TYRxqDVEXVffrG2B8TF6S4+ieECNuLfCVuiZ/BG2g2xLGFluKKLAmmBaw23njD8WXjMXELrR8x9qSSWnnns6xk4IwLrWAnCHUVrYLwsPdcUpWMrA1bcjYkmm8nl33J0J/LOpoF1CGyoW0cWIM/Zwu+2OiJT/Umdxs5anPBUxAzVH3zVi7sIfN/lez6XzPOewxOMZkPeTO8z2U9l4OqS9Wfe2UWKHQSK8SzWBnbyGAjAjdTa7D0AwzD+mvLifbGvqiOW+cX38KzbnwTjeMej/ZPKB6PHjTxgoajFWtAtQeS2yEcRYoAs68mrBKP7KFeOfCuC9cUjgVaC3qpiHz9nRyGt8jQK1wsRahqdq2AGMWUKDLEUMjWGAWd/SliB5nHTeI7m5eUkDkFM30pZ9dwIPwRr0hs9dSB8O4g54Jmw==';
+const CONSIGNE_PRINT_ENC = '+JmhYllpjD5tp+ib.Q6L/9gdp73MSKXtwgwmFG4rKjbZcbLp6NXB25iXEu93v0JPEEauGef3KMJ5V+g8JGw9FvXaYkCQ3yUvZSaGm9b9f8pdhaQ61T+VN90BOoGXR0wSosX/wvf7ezmAAeuytSe3V9hpdJOWfSWMz1Zk1iXs32Y38MPUKOivXv2IicZFZWmLSjngdobB2fxcNCoRrqGWkGHKiekFu5G9bLdYOF7Ap9hGqf6AgZKT9VkO9hIQfgidB1XLZlMQQAvfpeoFVnwJ2jnCYM66TRZd1PvJduDHg/wOyxOmvfXf1lnC17ZKpDlEeXq1lCI+h0LqPIZziQ8aVnvL3QvNfeLLDBTSz754myA/hG7/cKWkJBPjLO4y4TadbA7JU/VlWGR1DbRXFwlf8kTWyoRu1+paA1HUVxwLzTAu/jJiteM8N5/lQYDTZ5VfahS9Fxwnt1yvRKtDONQjER1QG886w8vphmh0p0XqhYBw8w5G4jpeOVdz2EMUo9P4zkpjnMzm5R/JQrUbMb4NaclImxMvIaIi1DGd6keZW+4x+Ejp+GtnymYSW+L4pF62GwrP9Z2uVtUIthZvd1DxwYrw5AJjqq/V8tVhFSFp3DVmWDU8UacrN+ZDJGvJ6hG7c++i7pQ==';
+let CONSIGNE_PRINT = '';
+
+// ============================================================
+// PARTIE 1 — QUESTIONS GÉNÉRALES (6 × 2 pts = 12 pts, soit 30 %)
+// ============================================================
+const QUIZ = [
+  {
+    id: 'Q1',
+    text: 'NOAwKl2w+D5wDkjw.E3fYqctlMTNPzyr4gQK6nAphTvQ+PG0xNPTGjPEgA0zQeDt/l2HsCbRVwyDwdqdAbqqwbM0mtKsxB9XXwnjRcJyjXSdq0kVwUBWhASI1Ksin04u2WvMAr9JueSLj+dHq1DjGgUd2ojvMibFHYdj7SBepIHYMdduc3ax85B35O84kZsAQ+pMRHYROiT5X',
+    options: [
+      'TJWQWdb+JksZ0nBt.D/ug5cXu1ByIDoVXyvZKeGaoLqX7/Zs9x8rUPU3aqbj5mTuobgBusn5wAYhHfvrAfC4NT4LG8ANHeoa/I6VtcdJT',
+      '46/hhA3u1jAu2PHn.2Gpmzeg72DnB4wCYutVHJ9VyqZdel9DijLrkanIWm9b245/S1S6PYF360a/nAOlRLEge3L02SffPVV0F/2zQ',
+      'IPoJfwp9T0QAwPhc.1HrZmDxtK6LSVNYYjhCevlcB3pV/z+N5Nv/ksX4eeB58oPfS1jSkwMLiR5OCTRb2sGAgHb7GB7ww9ZBHoJg0S1C+zq44qZu+CwpyPyGGEq+59ynMxxG0Sw==',
+      '2rrpaAjIYwbnYrRU.cVt3BlhsBJ3a/V9Lin/TZW4hG6VNpcoOiK9nFrGOreo3AFJAp7M41Y5xSmnw0DPN3R3g4vasMdWgp4cosFofBAI2xtrlA4JiGhkiygIKTgSjoEzs8+QdZixB3e5RIuxxkHnRlICi9K3+/n1F1loenQ=='
+    ],
+    correct: 1,
+    points: 2
+  },
+  {
+    id: 'Q2',
+    text: '02H4rgaEweN75x1t.z1Iose9/TzjACnIPsyhfAHAZnsWkXnJW4ZyT1VudTxqYpTqGBNZftwvJJSAiXiDk6pq0SqGzW4nXkrqFSLhaIZZdFZzfdLkW5WLs+jJtOt7HkAylPg606BAOurFj7iKbPhzKTER8vJwLMygEy2zwwtL/GfXv4gaecI0LGDayZsTcfgOZASIAm6BkpHmJF9I=',
+    options: [
+      'ETpZ6Q6PSe7Ri0g+.I6hb5sQG7YschI1AHYw9P6OT8tB3iuizsCpHCQVvAY7EmZb0w5laG68x7nrtxbmwFUtvQTJ/pQ4F4Agt0nIc/zzX1JKe+gVljxG4AZ+UkiN/MPE1Sl5OwgrUCA==',
+      'dM3EgEjYM/lTKlo3.zmteDHtw1Cul/ZgOG739A+ORUY6WoGI2fPDnbglRjl9HO4DFgeCo+WHYOBWuNkLZQaLeQ9xMpNwQnt0BAt594sEPa0eS54WlaRArGr+Q90sjcGFylc5DY/u0vBm2MqubDb1/a5RTgGxXsXxB6TcP+w==',
+      'Hzv6WutnMq4ZQ6TJ.X11VSduH8AuwrS12W7JVZneH0GUet2erxtDQpOjjsELpMq0+rpTtpJpr9MJLNQNJjb7dZArmvxmuhlk4vWg9jWXUngg0z81tZZ2MBU3AURwFNu7fIcTD1A==',
+      'JS3o47u3+9x5r7iC.hH0FwVJIeiDkQMi4tHjyKWY3w0VUrg7qx4Yz7Q0uoT69X95FlApmK0zqDP9jHrOB1peWnOu5hmQpGW863AzR46KVFwHc0f/2nv30zNzRi4PS8lI='
+    ],
+    correct: 1,
+    points: 2
+  },
+  {
+    id: 'Q3',
+    text: 'TxD9yZ+9wDjWYiwE.4yaCQ4Y/ojpoJIE1gYtnumf9R4zzMCYQMSDjxg1DkGaFgJNU4HviDidwaIOafbWLdoIQwubTkrQhFCrDEQMlakMuOnkCLnP/MDcPO5CP5dCGSA4mIdwHGCXUBfHOqgObjDXQtvQQeEB7JFM=',
+    options: [
+      'mUx6R0zvvpD+nsZo.ryoKEsIVfCrQnSi1C9Hx7wx6Rlzfd1VqGRPkNNM2piIY3LXdROLELXLOSMbhJH2H6Ciwv9HFKQLddDjR13l0LxvUd1sko51JndAXF0IZTkviBY8=',
+      'K9YfhdYIOakskhmy.cGk5nzm/PmD6Ok6Sy4iUg2vQ/7sWf5gSScoA4xn+hHrdD2paueYgSsXTMjFQ63uf8oVPJkLemewRM9pK3PjO8dybTaikFFwxLcH8wLJr/Cv9U0jgPIe49shYoBTfyyEoMkRF7+EPZQUEYw==',
+      'O0FOLChGwTEED69K.XgWyBwqUpBYjI0Lg0n5TUY/He2tMM0qKZTDrmigQ9niVCzmeemdrSniF66M4fuY1Ije6M5se0VhH7jvkUoZJyrOa3EHPsT9Vm+nQtctofObiM7kZYPyzTkbG+dA=',
+      'HNUw62MJinSXlQpD.ARarHllwpD5b4nW08UoZdMnpTHKSePi+QX1eNDg+BtMj8iVm0QvNuOyr1YyCKZjGdinkbWaekLcNVLPbTTtKYD6L6VhowI+HdsLSz6iuys18B8RnLOtyxjJ44MM='
+    ],
+    correct: 1,
+    points: 2
+  },
+  {
+    id: 'Q4',
+    text: 'GExC/ADhYo+sVoCV.uqLH9HesvXyGXM4QjQad3lb+p6nESR1tmbcwAEPBcSYeHkDfMs2FVtj5l+BLXjbNE5bDaOy6+CGk14xc1vy1YVZzUuCQPHlgFL0ytPzjDQn19jOiQRVT2OHm3kGhqxO82JmwunF7kAA687VX8M0VWpmyn5BLhK10zcygHUZIayPweyLNcejX1/iWGxhl',
+    options: [
+      'NZAPRmZM2KJ4t58U.SGPEDdKcqXSePBWkbhUTNP88evqCGGLyUWRNBxTiYv//7CgMxuE5wMUPFtO/StFLtj9tWsItNnOgtOKBfoqbcUU4wyFA0x0VGW2bzUdIeafQYw==',
+      'T1zyh1sAOn7o+W4i.YaTqBkxydozxtysC4eSbv2FxFBo8eP3EH6NbWZ+tHmCV0f3MUfGSKMecaoyZBu0O5Udzd0QMB9u+o09d7hVNrouccT2ypFjjY+ZdWW2NTMYwTUw=',
+      'm3jUFtNk6TTyW9NB.3O5uvzuyK1kIJ9cPMx4JG1aHhGaoY8evRJLg7SPjlLMal1IL3/S6GjqNDaxYCMtPvc6GE82yIXJng18+RlTDGa/lx2bw5rkzJ6Rr25hPrkHJ9As=',
+      'fTWzzeavLeSwQuqD.6vE+dOy03xrlI4Lc9bsTZfdYyBk6T0+I77w5p0v4z5KhNFZ45l4ix7RmlToKlBjQFfGrlIVdV26gikIenzGZozFuPmo0P+S40fidsEUkoS/UPw=='
+    ],
+    correct: 1,
+    points: 2
+  },
+  {
+    id: 'Q5',
+    text: 'c7MeUswYvEoZhQXD.OtLy9Qx3CP+ogwEifxBwa2YVViahHMccUCN/1Bm70faR9W6qjln4+vVOY1SemsoTaVRlgLV+omjsboHx1E5AXiVlhN7uISNLML1L3A46NkR8J1/kO4PkO7KLAs4jxepk3X2tIIESewRoV7W1LqRpacQwvAcbmOxdCX+JbvDJP4KDRCix+fFkKwk9VcbhPqXh7Zqz+AFbEhQgMZUvpYkcl9X7C5UmufIC5IrpLkdlmS76t+7Fa1thnji/W8G2qZ0FNZmN+bSLsuDcRNKZjdh248dDm45ucS7tBfU=',
+    options: [
+      'iDWHBkmXyp3O7SI0.xFTv8s3KYoa+lyfq54iH14q4fx0QA4sICXiKxUSeIU+ftuB0eFlZdRC0sL+ZZciUa4wdAocqQv9d3Hv3xIRKkPllvyLl+eWVno7/KNWq',
+      'iHurH/+FqU1z/kTB.i1rUNe1QG6dXUnc8KHh3KE2U7UixFNSLtIpIGCvyMcX6KlwbC2LXc5VAt2olSZzDNw8pFV0vv65BUnjOrLgBMjV6IpSoqW4VGHWt6QAKFaN6mFLTBOo8r1wic9hjO7+YQmSX0sKgamejuaGg/g==',
+      'FhRHjZutiJFmJz9C.UdgpwongnchGjMoAKVHm29QVCtK/T35JctdxIapVrU31dGvXPQhEuToVktcF7x7//ZP13mcxpTddA+haSYTRoZRYnGAjkduKryogYSIsUfWfPu7nZeWA7n0jxewoZL8=',
+      'z9T9wKFZUud4OOME.z+In+a3sQHL4yA/WtPD7mkZMn94cpiaHS5dcVz3V0Ql9m3rz3b+CgqlVm9tltvKfn6l+Kjm4Aa2ii8FrVDCtQwsmlgrvc3vmNtTLVejBB8RVbK5aS7yRjQBsjUZJUS/wjZi08X4q/d3QFI/TCS8='
+    ],
+    correct: 1,
+    points: 2
+  },
+  {
+    id: 'Q6',
+    text: 'X4d7MV423WqevmV2.KMXW6mvXmhPN2zkGTevwXqBgRfCH6GguTBchbRQOsNOAziRfZETvowk5K32WS7FN1Yu/WtxAl7y+s3+tRp4xP2wC830mhK3oxZE3O6F8CqplHz8lGBE6UJDBON3sDzMLynB+XgB/3fvI67ymt3dmesQakI2WYc6dMCPUBHo=',
+    options: [
+      'VhyHQvYFr2EYxD0s.8xT6PIFK6jZVwreeb0HaUKRvsqCCH2bptELPBuLyUPlSeP8h5KrXg3ZOjHiYVYpAaNh5C5eUSbIGlMG1qy09RbTwtoKetDrYic3lUiZ1UXpz+i+Y+UD0kDlZkg==',
+      '3AwFzUXkz2O9RS3L.i+pONI55SPdc6BZbc8eMj1HQq9PO03Y8ipOtdCJGjbOq7eM2loFGnDAnUoiRvVWFV2pH0apDcKOSS8RSTtAob/sR5tj95Xq+UscTY3eR5zGfEknhhwHsSTO7srVMEHbiCbwwoHbZeQ==',
+      '+zlEWGu0UUKOY/jb.EpLSWVQMjgPPO3/1qCm2RlR4EXP87w2rnliqOQ5MSYCzGxFv04B2zuoyYrZM/1OkM//I9Ktiq4KEEgiO3Jxyir8wop5vZebdIOFp6xDxg6FaKCy68qbwzw==',
+      'IbcfQjck9CAgI2oI.GYVRGbdr/UIVBBFHJVI5Aq/lGcyfQeCXVjtQALo5mRa0xzW/i/RwqKY7wg0B30m98xHyxWs+a1d7xPby1TYl+NX5b3mCgRJ2AGjBiAW+ZuHZSmWn6YI='
+    ],
+    correct: 1,
+    points: 2
+  }
+];
+
+// ============================================================
+// PARTIE 2 — PRÉIMPUTATIONS (16 écritures = 28 pts, soit 70 %)
+// ============================================================
+const EXERCISES = [
+  {
+    id: 'EX1', points: 1, tva: false,
+    partie: 'mVN9k4+KoteSE6SG.zbLOvP11t3DtdFSXIUspm64HXcTyL/FTClrhb59x1r2H+mF4',
+    text: 'dr3xFHQRBfbvp4jG.36oUfdn7q6WubDpRT/GMhaVpjLca532BGZgWAhI3HLmHfpbLtlblwKX03DZv/XBXxxxQD/XnaA9RL8JpmMVUWMPDJUj584BL+RmtSKAssC8K',
+    journal: 'TATEl37M8hFsOCK+.Efyjzuo5thxEUVbwyeCowHrfbA==',
+    docEnc: 'wTaWiSX3E3Zw+ksT.dr3T1/xWkJaO1I8fL9f7yc8AS+3vcZV/L4zbku4oR++phaCiQqOHZnePhK6Ei4abn327C2IV9UCW801sHyc/3UlPoLjlZHRuY2RjyKjobTu7f9sTxj/MPU40QcvKBMZU1b9nDbWmcUVAe7/QSFhD+12kJIxnueF/dBRtSXLGo7IN2CcVEloG9cuXk0XsJEJuBwd096UJkhWHP1NgmLNnrXxMH2xMjEJuMXqgA6qMofIV6usU/lCHqfQctUqKlbOBoh6SvLwKpnKuxC+G4PitxATMTCrYDY4D8ixUC9atapIMS1czXfQhhGwZlprwBWMQoPDu1zn2zspalWy/7VBMN40jNzYIioGuOPl7Fp7Wp26QrolICjjXP6O+9vz3XtqcjMTCHLlZzMMNL8OFnfQjDMhs9+q+s15aR45+bKqya/IZfQIjhm8BCxpfYCpAC3iy95zyykwa9wX+ihlhqj1EnUP4pdmIIer3qwXe4i5yN4BL/7GVZUmydTVZ1xkW+dZyJ3YF9aAMmSOdxb/kzscGcDZ7WPsTAF9MQ89McvlrKiXPAlSrh0WLUoS/VdnRipEyZ2Ns5hJ4u2E0XxRw8sLhj6auRoh9vm6CVdv9ZD53Qiw8ta9fpZ4DcNE6O7KS8U365Ch3qZGnWwEJMOFrGunzf9vi1GWfhwmPZQ/YFqghrqItTpqKgsjl7t/IpyAVATKtub6xBsydVIgVw/Uy7HruV1S+Vzhjv7dUDpVvENOA/oXjmOgrR7OZB3L3UkyAASSPnq4=',
+    expectedLines: [
+      { account: 'Io5iwbYOa1K96TPS.X8DZp3UvYOu3W/Gw0lD8wNFeugk=', debit: 'jbcTiRaTClwTXa8D.xOayqx+XAEg1mxzOUHuHEUgmGR7m', credit: '9sAekO3Dl54pCXHg.sVkB4V86jTnmTg+v/wmGvpI=' },
+      { account: 'RY6Ao0C6wWb2QeQ6.Q/HlHYs9JAduwg3MLkUnyGev6Yc=', debit: 'NLKgsp+mwsNz2sza.8IZsTFJdOmgdKuZryA5I/Lg5mwlK', credit: '/+vJLCUVbFAuiUJB.q5bA8OfRiUWpk/ik9K0dhLc=' },
+      { account: '8Za/8REKD97MnB9L.ibuH76r0Twcn825RKfJlcy50znc=', debit: 'OFFMXu8JMHGgYSMH.nW5nUk23MVqhGfPRSG/xWyg=', credit: 'l+Hgqo7UyXKbWT7s.oDtbFIm44RhtrAM03piNzglHlHo7' }
+    ]
+  },
+  {
+    id: 'EX2', points: 2, tva: true,
+    partie: '8jaJGAEOilfpCI32.gX7j2DWYB7kXWfbGJk+Zuon2IAc65hefzYJAg6jWBDu4qHKxeZ8b0B534M/Um85SK8XDFKIzsJk=',
+    text: 'z7HkNjcuNcx1iRWo.ZS7cIzlu3X1loh0ZQtly4IRG4tFVVWYAQVUViia/iWG0A7b8N4jq7FA=',
+    journal: '9aYcJAOm2V88IUTA.QKoGcxpGiqPdeDcAFtv8i+gz',
+    docEnc: 'LeVDdkZDOtapc+Wd.3tR8IvayXElXE2QgN30ThgM3PKKyTZk4lLF8FbsCPE3tZ+m2VHQ7jFKkhvMEx1mGErjtaBsmw3uGc8BB/pEmqLxhifr4VUGfbmtVAK5xN1en22ujlY/MS5TGNvrWSxxsUsec0289Knb+7kyduV0FCOe5mCowQGoXA5gHL2DVK552S4xRmB5H7Gs/6S+nwbQijhZ3yHnzqISI8uPE7P70Uj475LuYbg7xzAbEJYfiKMsC0+QYsIdAboe6qTtzwkjYNk+7+er8s/pgbaTiIZpJN2FhmGVQf89/mfUmeXuDqvHvDn7o+OF51MR9yscHyKx6OhRPZjSGYXSff0Asg/+Uo9iu7uDbmfct9Vmg/qK7JzcrVbJu7y2b6yvth3ajnscHqnqi7t2mv5ukLEJJs//9h6xNl8AogIK/IpI9srfhkaSsMiCNHHaZxUlT1t94v71ZLzMMWUvy3rRDpsWOITrGWcQ60NKLWSKO/iTHnOGgz3kw5Lj0a9zMr+7zlsrXIoQ5e3LQ5OsTDAZ084kLqtrdwqiv0HQ2NGhGZvfIRRJajNibJi32P4xjt7mA2Gn6qWl/tNBW2zCEVrPg88BhGG7rWO74s9m1+obPDk4/HzHGiotJQMARN1gO+hZbCyF6c4rPU7BrXY942/EO4SlYHrhzLt3hwAFGWkNuAi1SiqrftrerinPsq4r0JjtJ4Bq36Rx3gI5TOiK8y7sXa9ESQVTYYg==',
+    expectedLines: [
+      { account: 'psNxGFlTooxZ3Ifr.Hohz5qIFO0FwQNhOSwUZLgbOOR0=', decl: 'Mui/0HambOJD4Zsi.FcbfqxM+dAIDdw2rF8/TE8El', code: 'wJjY8Q4hidyhoDIY.lF/eGG71N582gi/2CMVx+N5nYQ==', debit: 'hnQYaXL4BAPB2yHX.Nyw6uxDIBYCZUpEftpEFF54QQLk=', credit: 'rJ7Y9XhdctBZubh0.WtrC/grKh779SrtIPixVdq0=' },
+      { account: 'FsemcFoFnLRnaCJX.Ir/orwN8eOvjIgbyvrLpIHza/Rc=', decl: 'mDg4p3wk4YgIiHJe.xDmryCfojBY3knHTOD6SoJhD', code: 'KpwYcwV0esV8++OJ.5yurUvIOO/mTgW2elxK6hw==', debit: '3Ci5wCsoqPRe5gy5.lgfNFgBFEnmVvnCGHQWES7hxIE/x', credit: 'alfLnV7Y/8kANa9l.EhNeJiH9mf25JdBDPiDTf1o=' },
+      { account: 'V+J34Rru3xlWYzXi.z+k9CVUrqW8mtHMB0i8TvBAopAQ=', decl: 'aw3L3ZHh7kneMbHJ.Sn061iVjpzNQcxxWbNcw+Q==', code: '6P6d4M4gGC0anfDN.FLcHJWFvGm8Bti81+Z6QkQ==', debit: 't9Nr9abxDOv3HL+q.qo7b+dlqpNpY9vKAqapH+d8=', credit: 'RJXIAsjTCh7JBg/M.apGpAf49/6+tznqHZoAO7MDXMtcAow==' }
+    ]
+  },
+  {
+    id: 'EX3', points: 1, tva: false,
+    partie: 'iAnHfPvj01VeZUeb.ob2d9KjRk0fY2hDuEYdLAhGrAWaWUK+KPysprzkfejsz/3dHaUSxY5PO+RIEw01JvVjWRx9kdPyC',
+    text: 'YPjWlAwgGXfcZCcV.ihTnBhPNAsH388TmPz91+HxJURbg25fRiwvxcpcX8Gmko4mPwON0HEUGpOE=',
+    journal: 'mcAx5xSRK8NzyHze.d2vBe4oZPwFMSD0OSWe0/zuJ/Q==',
+    docEnc: 'YILiX5uDNCodjjen.e8mn1CYoVxK1QWNeIQVnRKIhyjHd0TQ+zvIok+B5Yliio3equb85SlWgS/C0SZGKhmAXk2SFB68WLU5IuGRB8/9UVgi1ab4HwphZgCezLZRIUq7Qth8mU3PsUUkExiicjjBHxds4lejnO6t9FsxI+DrJRZ3AGEipFJpPnB9+kT5O6vxq9ZEwM6nyfXaMeEJ+CPup9w+nDRAtmPAxWxQZo3unDbnG4y0qvCSyAqU0YKj0hKwTg7DXeYJ8B9fVNERioQOPJGP2mIy9XAs5hocyPzslmFfv5ojdcGvo33WztrtlY6XrVbivwPmPhk1frlkzSG5P7dvHxcu7DyfYmBAQTSVYMs4Tqk3E5JhBg7iwAuQGo6/JF2L5dI4Nl0ay1CfaxcoDUMpL2qrMOOiY2BK+xGMZ7DmG8aTwkqz1ceIL2UYHcJE=',
+    expectedLines: [
+      { account: 'ei1XlJhtAM8ZcTCj.A1yFOb+0n8TLIo3ZXdqD8ilsBwg=', debit: 'VGYeAc+wNzkpG//E.7MHaVh9b3deWwFc/LY+AAQ7QQsZzZw==', credit: 'SMeGaAVGp3BHqDh1.sxJKO7LlumyK3vuzkE9GVjA=' },
+      { account: 'Q/UXxXeHjnrnTdkN.8FwwF2/HUXSsu3DC2sF1Jw7oi8Y=', debit: '0zcJYFytehlPbMZB.oevQ9JptQhZ/7DKM8FoO+1Q=', credit: '6BCsvocHHaqDHdHG.h1lExYJ0VagZtxwO1v529dP+ez9OFA==' }
+    ]
+  },
+  {
+    id: 'EX4', points: 1, tva: false,
+    partie: 'P43pfuVy7xaEqUGI.pYTkWY1n0AO/G9azgTHsZ2DY6iHrhW0xpgO8PtpSHYcOkjk6Gdygbg==',
+    text: 'FHFeGov8on1syAJn.KCXNWQujbMGKS0aQB6cU1FVKvQLjMj49XCuFXqpmxjd9Ru2P4w==',
+    journal: 'ccUn4VVn9nZ7Ardg.t14H4NI9NT+iTtmrMCkUwkp5',
+    docEnc: 'UWHKzeb2EAs9lMss.9ItlicoldjExR9fI+QYQbKIB7dvupoN9G9YP+Juby9V9HN1Om4y5b1/2LP1DhAgs4Q41bbs1qTJpWEGOFI51vcvRIaqbVThCttWroVvIi/Uf/solKhCIwT+X1R5TbKqajyye6wAsM7YPuowuDmOCZ77+ZRdkt59oPcuIckkEU4s2Wi0pg9k2fjfdNdei3JcItDUb8UiWgZy7aHzGXJ9QAb8g11iarkfK+LjY40h3joTfADp/KuXX3Tt3x66iS/8oReH/ynyLy6MZe6IKaZGm9nxa17B3RLMvvn9FfbgbNG9L9eMZNspwFlAAGOX/dJxXmOD5r9v6G+8PPRR03F3O1eBBeZQ/sV6NXVF6duakeWc6h3Fn9HkiDu0RqE7quYECgdrbsC1P5RhSzs+ofX41tiSBr2tPxHARVI1Ng0DYTw587oE=',
+    expectedLines: [
+      { account: 'gFW8jUlB8Eb1HWTb.sNpascN41JQRxUo7PjzUKWJ0pa0=', debit: 'kfoWeKsGvv/v2J2N.zOdVg2GXQNjs4sV86tmKWvLr+U/icw==', credit: 'zbbpJDpqUwzqTVBB.nMPqxR55sv4vy0UYKrLh0F0=' },
+      { account: '9t0YHHUM/ldiybVv.hysW+xgGuKSstkUuF6iqktITbak=', debit: 'f1Ru82/EHK83Veu9.Ox1KI1+v1uXTQejFHzjn0RQ=', credit: 'strC1bMs9jJYx8PX.NFPSq7MCb381Qu4qNp6g6pnjfD4+jQ==' }
+    ]
+  },
+  {
+    id: 'EX5', points: 3, tva: true,
+    partie: 'cJmatoB99u9luDCN.ChunsvEDbk9syfFIkmOfuwctrZxFlwZzJWvonJvimH98TtscikVcVuJnY5/+A5Bfn5MrABXYJ8PF93tVwQ==',
+    text: 'E2P1BJUH3d5+tXnR.vZWv7mkBV0aebblYX/elKdxHyM2UpzRg3nSx8s+eqPFPh5QNZRBHMgs=',
+    journal: 'QKWL2S1RfR/0qa2i.NGm3Eh+zHtVzKFWG2Jw0V06i',
+    docEnc: 'XmbX4Lo4HR5hCu8A.nUtb6GqfYa6ZjTwUm5tziG7ax+Ak+H3fWUsF9kPCqczU9E2wwqceOzDx9WXBF3Eagb44bVavcSYE+/6eZgbszDn92YtM+WR5wTgZXtSyWHkT6sYp6JXQW5tEQahd31Hl64wEx3P2rmFlmOdtU0YgH/O5BlXVsHnaKGsunoJlC0s8MDrRDssYpcmfhQxEUyEDJK3y6gXbkOZRMuOYKS0RoRkdMBwbkWgBbPZUqUzJMATwnY+CKtqvuSZtCKljCt13APtsyRS+a6QcM+hoaapNooZ+V1iazZZZY6SU0ytBfrj7A+1jt2DI05pLGnFFvDOMULWXlI3ASk3R8J/0RDe6+iMmLHs6L29ny+f6NmX8FcZdek5bT0eCESqqA63jdqZ/ukWkGLtG62i+dPOl+Luy+US36xJWc4KPGZllVoI7gwBMMq5eMST/Aq0VzBGidXE3X5qaZnBSCsDVJQU+YNBAe57c5NgeUpR/oHnBg4puKb1GB5vASwADIsuddEW4our953N1LepwDxJEosKVrOby6Eg+lNibr6r3yXvf9fnBnBi3i0gnsTsEZyjsw8TgkSlqiAKTRvMV7Mo7BxrkBdDk2ls1gOh1ojglNZFlu4U6kLX4rV1EdS9EC9kpMHM4e+QoPHIBlR7BEaLemf+XES4rtxAvYjdFge6jBdLMCfYkJZjGCgLp8ClFKH5XoHXhyKFpH4LIBjWHXs0dJXwVNQcOIb3ffZKe19sPkQahMTGi4vMq0o5CKNUBAHwRr+ugRq13y84FNel6G+qhT+DuDBohnAo3Eeb7y9hH644bsOpVoMvLL7NMQ1WgEh/OLmafFajx2NHGk+PAczr6JXyW3/VNvS2brczZn35fRAPnByQMp5A0',
+    expectedLines: [
+      { account: 'dRPkPSSI3lEhStbW.DwjfO5ViMOngp0bZLs/M0qzOLSc=', decl: 'XhZJEyPD5V9dAGHH.KUG2gFPoG1zUJxUwVbNE+tKiD7Ld', code: 'szhZPX/4rA0syBti.WLGIehJlCTewZo9SUBq6TieSB0k=', debit: 'MXMzb48K5QrGL2c1.LxJaLGWaBPBnyLfpqxBFrwy1B0I=', credit: 'LbsL8yQC6DUkr6tw.b05VLA5WkT9acwpncS52xao=' },
+      { account: '6FC00Ll0qtJUWlGY.oYN065Yj4WOGQUNffxEdPoBrUug=', decl: 'toIBiF9Bl/5eAUKC.paL8dBfkSsZNp8ZI/DQ7vwS/', code: 'taNBlIkkgS0gth89.9weMKcQu0882pnbFJFypxA==', debit: 'XwOQD7Rzc48Rbaja.7bOAccJ9pLJaeuk4lhVqF+6GfIpB', credit: 'mD+sSJVyv9iUXMgq.qyO90JwVNNWbAT6yn7UYh1M=' },
+      { account: 'fyeR4qFhtmRTkC2F.0NskHyn5lcNtPxh/TERW5gikUnY=', decl: 'eHV5+Nk5275K6gNz.3wQuVp2fpofoIYvOQGvNuO8t', code: '6IPVUkGWJGpHmVb7.0qykIOeKzmxTE0qck5BkdQ==', debit: 'Duu12PKLxcW28yc2.OC9FD+Y8R0S0LDbPQ9YhCHo=', credit: 'JnHAJdB0+/kyB4i7.U22MsEIE60gBykmpzkyFGeEZ3Q+I' },
+      { account: '287ksvU4DdX1Euop.iprDMCmsI/EMaxbxIbKSUOTeuOY=', decl: 'dUj6+GTfWyyZmSYt.8cKBU/CrjKjd4tU58pNdQw==', code: 'ZCQEvzWD5Qcb2awp.BZdLkwXzqMz15Egkhx3d5Q==', debit: '8u5hOx7wYGhMqIu1.6LyjgAD57DqNMLQsppMxals=', credit: 'yfwnARHqNNwzLYxL.XGBfqQciq9hoGVFVM6L+WU6674k=' }
+    ]
+  },
+  {
+    id: 'EX6', points: 1, tva: false,
+    partie: '/ZQVKlChquiEWPKU.r/ETNqzkCNcQol50RFb1tFU5FQtizW/0ouJ4IM9KxBEwyARN7CZrvEqImR/7LUq/a4uDRQI=',
+    text: '0owLx1Os7kURjv3S.MS2ja6JiJtqjycxm7x1ewJv29FzVwuKQK5gl/Atb1okLca0YcHM+UL12TfY=',
+    journal: 'TMOBPILZWt8pL5PY.tIv/8IzpXnJ3jLBHn2G593vR7Q==',
+    docEnc: 'jc2PrnqoKV7ZEldy.TQNdNsJTIUN1rk4hGrVFwWaqavQpSVzZldD5zNerbd0L9/yhOcszHFqofcHKkwjjoQb1iXDYkcN8lVMW0FGGQZdmQxYmTXydR5zfyJektZoVf8VC6EIm/4LLo4XkF06uqY+WDeQwNP7ODTuxICeV1kN/fc4cFKsSsfCbOIjT7qVZLVSJonRdi2qeZ/DgUXSpQvs0wDsvMTnzjbhq89Vta4jswz9hDK0HPSnx+z1Ok7tBU1LVdaQXSzON/RO5l+vuovyHJ61XhMUuQKS4gAFdlKLicx+55xSj8Lck+ILdnxJxnPfJiQQfxiE9CmMjwmZ+pr3/0sSrPOeBz+cbh1yphTHNmqQoi0lJJkIIHZHw/wYyWePbCSAK',
+    expectedLines: [
+      { account: '2zeHeuQnTdPbFoyo.iJUqlFUaitTIyf1AKZDt9/0ofhQ=', debit: 'A7YImI/gS25VCoW5.K53vs1DAlhb8FajsBlq+Bwbmx28=', credit: 'YZusdoGaH/poqzEf.R+zvtI75W9/ZNe94nfSp12g=' },
+      { account: 'wFahG9RN9lMSG4lS.HBThqnm13UyRQ8QkkrOY1MJmUeU=', debit: 'rOqmQo3BqJi3kBtA.ZQcV2r6EEUrdsoCsGxOcGDY=', credit: 'joSLYlUnnwjhC83O.IheeJdPLae8u2sQdAolKpaT9Pxs=' }
+    ]
+  },
+  {
+    id: 'EX7', points: 1, tva: false,
+    partie: 'f7unuEaPYE2GA0Xj.xaef7vHq59f+hMj/lrUYl8FO10MvxSqom2erFTaJa6MRQ9u4WHfxbQ==',
+    text: 'a/BoZylfuvLIzBvP.GQKY05DKX1kRbftZESOjX1CJ12rAVBC6pGXRZSvf4ccAZ4LOwA==',
+    journal: 'D8APDhrPD8mzAEm9.sjNl6gMZlsc92GlTV4/pE8JI',
+    docEnc: 'GR1+NCN1Bqwuxtmj.3DTVabP5d25k6mCFAKCs3P1Zhmp7IPuQ7RjyVpZ4QFnlkWg24exXvUaN73eJb0gToM2s6kH1FC/RxJXas7wQ7JYcVJIEPkQ+c++2k5D73+Z0MIPDFDIw7/ImxPLAZMZ5cZD8naQqOff9XaFDgupYnWC2f0FqrrDJ3vC0gItxPB1AKDObSz8ghlLc+37ht3hDmhfjDzmroCiFxWtvXh2cZSkra3B9ntSZRCPFjm332RbXqSNbN6vYi107O4ztHREDv9QI7wEVY4zyJZ4dIktKhb6GMv1xF05UtHF70fGhRUIhDIK3cMu1gNO+uzEDy2lj8ta8keB2eWDckrbvcfJR0KQyAx3+nXB7v9VPa2OCqT3+/O7uaNz7mMKv2XyT+jczGb1g8U8aGIj2RCzj9gNdte4FQfs=',
+    expectedLines: [
+      { account: 'q+gbeGowRx1l80I2.F34xdxweaIvSDN5il32clma49WY=', debit: 'MHMtRMaO9uOanEtC.CfO0Cv5KFGgXVr79cpYWGFVM4X8=', credit: 'ZCNQUrArxQzBwbIl.MlqarpBJypCucwYS/mqQWsc=' },
+      { account: 'YCIx8sXvZ53W1H+Q.RPB7IhCt+RBimNF1JZeqdPhB71Y=', debit: 'QRFMlM57v2wRHby7.NcWU+Ga3xzP3bfsL2Gg84Aw=', credit: 'dcBixiIPw1vYzjQS.G0k7yepZQs9+PUFXQDHFFEm07Uk=' }
+    ]
+  },
+  {
+    id: 'EX8', points: 3, tva: true,
+    partie: '6h3cYh0kFbFZd1mi.djtZKbCQ5fY5VR9DC4fL0I1NtG6S7yEzCA1ejfDXi+05dVIJgNngyz7ZeQVlJtUbufBE',
+    text: 'zbEWsxzbqzku1fdN.+On1AuQjkQoPuRxwNbJ9UCxO6ddbOejHHJalpcVvfcQFoNh6LdkWN48=',
+    journal: '92tDeBJDIy+YNoeC.cE5brmnLmBwJDyrEL4NrciA5',
+    docEnc: '63bkuuru+6+/vyXU.n/QfAqIb+R8KPNjfHlZeUdkQMMJ1rxsJDyeJZdDt0RkV/73fAl5cJLyU7QuxNscvo6R+2MLht9uXuDoa6vHmROt4M73Ju7LON2kZ1Jm2L+abJwTmjzqdXp7xhdfxwGNRxHH/xo6YA/uM5v0vD7AudBAvFCp+P+GlNYw+9ZHHSw3rfeF65fd/uG1vTQPzj8DoJB7y5riY3UrbUjZ8brucVpofLgI8FaG/1Exc/TdhfGEHGOFL29O4ETnbEnq1kTNeF1o1VKFCZBNBGQ28HkEGNmRZZ6XCbWMYBSYRg/C7XtMUuBUhs7ByTtPVOAi8Q77FqOhpbloX1nFeMdgJREJnK3d/MDrcxwVIbmDPvAB+TxFwFn68gM284UR8/8EE7WPdW3mdl+vMoSD+ahGT9+BVXHtADX3SA5hNipi0ZI1kjTotzCfgaww8nfiUBZVMQ3cDqGBj40NuTmyZbjbgjy8cgASx47Y280ZHRmwPWLWmHY5kzNPjBSWVXJOVQnJQN1A68XeGXMgZS6vvm5qIMzEbA+2Qu0fi6xnwj8AWymxy0H9CbSMUCOlqihGLpXDcnI2MghUk0xf6lxgf6LDo+j6Z5VbuIEuKTdMuRAv0nKBM2fjGiS7jCVk6a63wAjVGC1c2ml3AmI9DiTUDjjzDpujbWCywza+z2eyfMA0YLHK6x371r1LGm3XaAgbRoM9WzWMzpaiNbbDZW6H9SaNfSII2Z0XsiukMAgbygKFD31+EtF0bVmo4By8VEyOGmpdeJvFImU4q1dWp5DlM7i91xxTqxBvNTLPdL+2KyvRgcgE3CpVZ7MqTZBeiPh+m8j5UeFOpRJIYcRTbAAiOg+b3w+SamCnyzePQ2rO0C+X89Y9yJRfm',
+    expectedLines: [
+      { account: 'VGj8YR0ellWiPyXa.Y9hu2NBeTyd//G6Oqwx0UmTVF8w=', decl: 'GAUA497uLKhi27SE.rtbdk3Fr9DuuhN/pqXdcewupd+4l', code: '+JEzvLh3Udm8KfSH.udof+9kKSdLopUd28ip8TtZEhIQ=', debit: 'qjLy8Rm1yGNjEDII.shc7T2byiYDlufA0dzkkmI7iAw==', credit: 'MJ7iDSiP0WbxIZkm./8FNs3bL+KqDmKhYvNp/qZw=' },
+      { account: 'QZKt9R710yr7gs5q.1KMmVsSyBfIEp5rTjDFDO/RC7+s=', decl: 'PvqUOkid5mczg08h.sfS11sdCV3snrGrkVhlCC7a4', code: 'PWThDkvG3iL36m6u.wMM/fko9toO1DZlb1vY6Bw==', debit: 'VQjGM9y1djTU9DtI.OOsbofGos3b5rk2ZHLm0pJ3DL3Lm', credit: 'x1UKmWvFd8hX/KkS.YtZQktQWIKauUZe6BmpNNBY=' },
+      { account: 'Iwlu7D52HrFYTeNN.y5b8wO7Whnm6wYBeYzgORLlsVE4=', decl: '+eagydf6Lf2on4Fr.0RZK4atvdZC4qBwh0QF+LYWI', code: 'SxtUMHK59AuqBX59.XY1xHU4i9zpS+mEDYeKehg==', debit: 'oO0LF0bCJlnEn8S+.UazlgFYfMteBoNs5HS8jhgA=', credit: 'SSHU28xsvYYIq1P6.dIbPf0knTuyu0yaWDigqRBzhpFqE' },
+      { account: 'XgStjq3JzfLWFc/g.U26Yg69Fbvs6jzdeqf7nVQEGWXQ=', decl: 'cKyWDJq2GiaIIQyB.WtXu2ryzvB7cS9pdIdbX2A==', code: 'vIpNutCaOI8i5DEh.ud5YfTTBQdjKtlea0dm/kw==', debit: 'JpfwiKR3bv1kHB42.Tp4HAl5Z5vlfJE+Gc0EgnX4=', credit: 'WNnixg4sWAg5A9LV.PsnqwMcwY4M7YkgwifMPC/XxGg==' }
+    ]
+  },
+  {
+    id: 'EX9', points: 3, tva: true,
+    partie: 'vl+6cTKyieaYJgMQ./6uOuV2hkXpu6xEoIVfLBlBPrffnemX+5IaD0ArxUGu6hIFxPIwnYvwkC2EBANXi2oZAuj7MTiw=',
+    text: 'O8xQHdaMZRn/ocD/.6Fy12MbaVVpu+fZfsRV34Zj51LWQPddaUKXh8ohCUCrZg9QG9N3Y1UQ=',
+    journal: 'HaskyxzXRvYzjU+0.BZDschz2Y3HIvKxa6rZ91Ll/',
+    docEnc: 'alvPLHTfAPt2tGHG.9G/NKt1fQtAIIhLas9zyP4vuktHTvL98Eo7guDmrNACMnjpAfsZeBLmx6xY6h4V8nM6SSh3K6IM0bruMvs27seTQnuD1Vu1YV80gzVad0JtYvuK4dPrqkSB/JF1shuuFCFnWD7S6UL4vLGlYg1J3UKxJP6scFiAMqplu7nr+zQMVZoGGqqVxcApeEhrgDhYN6KAZRhW86rZmBmi2s1uVZFxDeG1yoXtU8jh1iDqCALKFdu6NgwjJBY1us46O37/MsWVrNRfHmaRbesCXE5VwXQfuZoolZWqIFT9pNtyOHYRnaRqS/uS91iMe5k65w2XUtdGtuPPLpClo1T4Dv0jGznWnuD1Ui2dTMC9D8v/Zs94vgOgdkuFm2xEaNDZDTqb09WZLy+tLtYMYAIS5AQJ+4N3O2GtjnnpG0di1Q8DolstjfmlDyQdC6ejZV2+bQSGhX6E4TUltF+g5KJZks4lOVt2myKN11WRET7kURWOxO3zKGWPDp0m3okL9cJTCjdM522nXB3VJWAHD+TJ4THwMxO2qvDH+cz4kZxT2YPfeOagB+x6RIit8f3xLcezUZHn8XXCfmhrrXEWRNr8kiB5Oi587SozuNZnWvwDRbFs15z/5YrC0TzlKopixYYXaF8lx/g15Q7yK03BKMz4cZpqNnLbXdUnGQDE9sx/1W0RqZdwhZ8cHHdhh+iwE/1OD65s3J5zuGp1YukNLJW620/ehjFK4jr6e6eSiTj0Np75D4CrTqguDlIghZllUN8j1dN5zntaHo3JyHaUWsybkPIdmjmnLOYHSVr71C0GiJswjVlOXWKc6vWK2d6FpAeQa4xLuqsPpE51zXf4bWUIOltb8KLTGwVP7NLPAcEm7O5P5IECBMLVeT7lwm9ku6nPDe1qQn96xYg3AZOYwjfcgPBZAG36SXgFBfBn0VxVJYiKLuvrbAZBzUfXiHqFgCj7SwogI5Co87Vg+P+V8aFvXryJX1vH7ER8UBtA6SvL8',
+    expectedLines: [
+      { account: 'jPFoLzdhznzJCtio.Cq91sJqhB/+HHnv41j9l92Lzu6I=', decl: 'BqV8VMiHxiNV52g0.rdoogcyKmiKVRH/hFH93WvsY', code: 'OJ0qoWiKAsvxEUm7.x7LDJmqm3ZRPLalPw6yG5xEB+eFalfY=', codeAlt: ['Qij9RfBwsSh4NJbZ.0kXW6iGQixvrEWVfw05g7CRqiy19KNQ='], debit: 'zx/7VWk0sqwmZrWt.tJBb0OGgHY+294SH5hO/u8RerDrEkLiE', credit: '9SjQEjwYq3eF9wxw.v0Ju56yVn35e2tEumo+3w+k=' },
+      { account: 'dZEtocAvWciCM+jd.RGVEYKJv+utevzTkM93/TojuZHE=', decl: 'HkrOSn9osc5adAb8.Bz9UmmHuBoC1zszVqMylfsaM', code: 'r539JQOlgx39nZiR.9bT+y43ZjhXHayZRXBjcPA==', debit: 'MQQWggU3i+uE8DOh.2BsbQZ3CsPb84pgiMDkD1Y3K4aomp0A=', credit: 'ufSqw5R8YHQD9mPY.pOjXew8ER+twi82s1U+Xaa8=' },
+      { account: 'benWkBGY5NHN5ciu.dPkqNxBr1eo/86nOP/s2GyIUep4=', decl: 'ye5zAbEBYfFbG5in.2DgtIHvcvvNzgplfLrWH+Q==', code: 'K/0jp0FI7YabsF3V.RHs6VshxJqhuKfWJKTnoHA==', debit: 'PlRi27t1hYKZ0tEn.Gn0PJ2k0kOWfn0tE4/oUHE0=', credit: 'EA5bC/UPIi30+GG4.A7c3nFMV4iAam7xv6cLSEXA7GfTs5t0=' }
+    ]
+  },
+  {
+    id: 'EX10', points: 2, tva: true,
+    partie: 'ZrcLjq5hBv5CtxZ+.2qIVc4abv4/Sbr9ySBKhnrKSvVITdoDvXUAUBbNHGxCkExtV23ib1e6eQIkP2GtMHEP4rlmP',
+    text: 'HNJ3XoXrHgUVWmSr.vFe9Fud61DpGTgWLcBPFYbY5MZfOpvBcT8YQZ187JAnAhYuwhhygaSGHpriNFntAlNXSCTSzqAxM5P9sgahoFf2F28qEPxOT0XJCoAKp+qsE7qR8ILz6Djb2DvGCbHgA7YJBJLDmli4sGIUpeiQS3qkpZrD9Sk4SbWU1kwZPUfy9njkL3uU0N7+Y',
+    journal: '8d/rVlWAeuHgzj7f.LFl1Ybl3UI+01UscDNiQqg8/',
+    docEnc: 'PSi9TKUoy+tTVmd7.A1AvEFIs47/okesuiHcyqj34HX4dk6nBoWyj7khPLBmS1NkQ64i2pyBepLOiKDZA8pft5eTGRCPLGcT/gTVyi4VZoeIvS2ttnTRIeL/Hnm+yKeLn5o70h1c1YRBd7D1jo0MH5dvypa+mRElrMcDhL8q3l+115VlgXwyxor8W6NJTYEjDAqGn1v6cQxx9z1Qt4H4Z+GH/rAsmRH+jsVQhrB+6WEBGJt1IjakXNZY12JYpWkhpvZ2ZQRyGR48bAs1qa77DyNyNP9ELcaaykAFGU5GZFR7iVnCOCEi9HIJU9RMvxpwauuMrxBeH23yJ89QiJ0TiMdfgMoSmeIGUkBOpRoFz9P+72Yd5VLPn0ijbFRPELAfFNRmxiWadHg4OWStDbz7lvVNAvkrESEu9I2OpnNmpeFF+yafzu3Rd1yW2s9Z98ZtOWOHEtVNp/hY4UKzAUqWLWcAWnhCYQT2vS3jyTOn+FHJIofhsMKXU4c0d+ovoGQBp7t69tZCafVAVrz69NNSKO9eollIZZOAeHxKW5/IwvSAVocLttSsfoCh5Ghrl3Z+g5xGXOZE0FtwNM0sJ4aYgL8TBb1kxeZrM9xCXMFkVi6DkT6+vz76jdWXJg3T1G1ut7rQp8kefDXj8DSBMDy32vZX0sr0EheYby5a/kLLjUdn5KV66W5JCgcztIwowXdfm+xIW7oAzdEWrfIB1t2bfoqyc5gSAWfXdxlRHPYSRzdmYfi44Z52PgfsnK9+W4hTrAMnQHIQSgDUO6iyQISB4wnRuBK6MHrKbuytr2WUWwiv4NAjJcTFxy57736V0SLfWVOmTTX11Z/3EapVYJyIVwbB46HDHwD2Mn6Sx5Z2U5E08nEasEX9ZKjVznLmZo4CWex/Ogu41IBNGn32jeHATh5c1xLfoaqjn9K/wv8PblAa2ai6CVn4aDAXKWnsvcWMZuk3tGuECT0XNucHG84bTabi0CkSOyXQk/7zixlVkVdo8HQAgNtw64HpbOG9V2WWTZsocJCSxVxn2g8fDp9KdN9NWyYkrPEWChWkW82qhhx5CwsxSHAlKpICKWK3Zz2K1kHCFZkoDjVqRn+HECVxwc4dShqBvk8xhsd/WqPYiV3B0rlhfk3dA5v+1IJsdbgGyzt4S',
+    expectedLines: [
+      { account: 'bevXsf0YuQTb62Di.RkcWrmji9YMQPAZgyVakMnUM6Xs=', decl: 'uWy/7/WN3lBrOtq8.MFxckRfRPBUVoxihlC3HQg==', code: 'b2ldXD/VuVAgwrEl.+QP/31NcGeZGjqlrvHDwJw==', debit: 'uJjS3nyVScF//3B5.aqpCTVsQuoIV7k7u1MT9AP99UfN9BiE=', credit: 'BvRle/jJ1yHXuVxP.lfJ2wkG7ieSEq7xeoRNr9QQ=' },
+      { account: 'Uwnhiz//xIWljTF6.DDxEPqvbpyLFKsHhB+a594lNNgs=', decl: 'G/6e1FpliuQptxAI.gFH4WmfZcweVoJb5HpeyXUjU', code: 'PeNR8BCrQVHEtlW1.+Oh7BaMRvQVDsprma0dE4def', debit: 'FFNwL7zlefoZHUKz.nVFhpgj2XZG5tEBOS/AnCxo=', credit: 'oUqUc+PveT2eq8Km.X0nuzVkIlGQw2YlKJRhSGEyknys=' },
+      { account: 'xrFJo9MX33t8IMEG.QkJv37LqFZb8hBZfFQOagqch604=', decl: '8hQmvWB4/60CPFAN.1gv/dza1ieNzM1wNFYkav41b', code: 'BGwSiYeIhu2mcdmm.sDrFzy4Z98yJUgRoamn0Bg==', debit: '8cmckknmE1UaWOKQ.YQcDP2gOevTZX0Q0+RMTGVU=', credit: 'SnUil5AoOvq6jevU.F5dSYkKbxeMngjUUjIzCq8n3fkVO2w==' }
+    ]
+  },
+  {
+    id: 'EX11', points: 2, tva: false,
+    partie: '7P7EDqSj5AyCEPVo.2IGzasUYEz3nXuLK14wBxpfm3pssAJOeAKz7WT5AONOjkv21tQ6LgGFQFWcJQtgYkYdUK1SN/cMMpJat67YvzCc=',
+    text: 'aVpEEYByrfG+4cmV.vpGgiEI5/Ejaoy9r/gRMawmjLmOf9SYCHY1R7KOSIvKw9GJtFfQvArE9rGU=',
+    journal: 'XHfmFOITidyNKXqp.n0d43Ej4tuJh/Sk1q+3uwCgu8w==',
+    docEnc: '72pyRgPzjHTy8KvJ.1yBy2ERLgvu3ATMoPVQ8pD7KihzOEo1gIMSnSzcXqpU0yCcVQUOk+bjJAF2PQt8mSgs7mGkXG/Y/57NjjR/N9huFldl+F8TiV334cN6KSIdRrCk/SPS1glO2LOIDXtHtKO1K8mbbLSXNXq8ZstlWA6HKNxKRJt8JSOMGM8nri16J6SQwF9zN7UkX7XbUK97RZpGy0gZUnuF5OY/L56CyqTJV0VBpiV7qE8HvcBj7tET44+hT7dBwbHS/RjX6sLP5WuZOfHEKoADUyLdqJrXo4Mjha1rm552B3ocXpJYr6s1NAniGy2m/Dmx3BYFwA2ezLuzBDaaOK5l/d8Wx4QZvOkb4DFS5tDok2K7EFK9Ja1cyF0FGwA2yVgDjjNHoQGStDtnaPtukusF7kfgX4qoMm94Yo6tIPAyIJ5IwOSeHLt4gwiB4bZ7bAdAA',
+    expectedLines: [
+      { account: 'OX6Az7e4NlIhZKEY.0MUd5IHY80M9kTiWd8IeLH45eBY=', debit: '2RavDy8fSemVeUGP.w7j7eDeRBTe5+xGnQOdRWDU=', credit: '6cRfejaqhkKW0HFU.rYqXweYaOhE5N/y9HmMSerMOoVzI8C8=' },
+      { account: 'oyG/ILx6Kvnr9wdj.DXXVNr0jpOLUbHIBDSW0AgSMWXw=', debit: 'FW/mi7JOXrpA4NkM.+WcGV60pRxy5gEHn+lTGU0WGrx4ofZg=', credit: 'AIiqMn9BPFacLC5P.LpysQ/gSUeV/zJORRqrz3xw=' },
+      { account: 'vVNv7JTPs54zoJDI.gtHekfVZGCEXJE+PqmDD/PGYwcQ=', debit: 'EmzwGku3auqI/XqL.d7ZGMFSA+Qb9utQwndELZn03', credit: 'qjb7wQKfT76Mi3Uo.WLVhFeiAfDgRJQs6VgkpCwI=' }
+    ]
+  },
+  {
+    id: 'EX12', points: 2, tva: false,
+    partie: '8xB5P6U+aaPzGA2X.csjxOOwGH65tZr6FnrFtr1WH8OQie4RUUv4Fu4XjGBCjkXXuRLnwYg==',
+    text: '2QNVEzXVtJIPi29A.vg6PNt8f2+KgRxeBqzNryz/cLgpeQOrCO5mwMWqCZgxyORHF+/pqrGhb0qoc+ZImn//xb1K6CDqZ',
+    journal: 'BE/6FzZ6/vvByVra.Si//i0q8bsXQzY5wxhq6dMCV',
+    docEnc: 'sYDOcP1ngNxNkLQx.IhmpFq4OC3z3GeYU5v8WJcRnJr7Rv1AwG8fgLVqz0xu6JkLtBVdS7Ffs4eTqFzvt0KRuaMw2uqLDZCeSsq21AdjX2BYABMeQonqjNT5dTL3+XdXWzhpbbN3KzcZH0iosvMJwrYP7MeE+RCVtaaZ1uWDIsmIeOtwo7IpdtI30YCh9IRQIvoOAXhZutLZRVxru+n0udNcqURIkyDbgCj3YpoDGiSxrjRizD1VBGXkHe2FhgdqCDv52HiiuNBRkKW3diuyXkk7dUxQ8FTtu06pczz2lCD3j0da5USFlx5TsOnXf4ckxnAEogIPRk3YULh0e3ZbfpdlGKpeUAwbZjYaBSnUC8ZqxAxnwR97m9vDIyiSksNqcY+9pWhEYxO7Nc7hdKzbgHmnSjRuLGLJMvUKJmMIBrg90H3RQVu8RcyTxHdoQfBPb4YxlV9vAOabq6WxTNMJS4rmo9Eag7TKmV2GjRMqzyaFOogLMRGsJ+WfsWf6e3QcIYT5bwidQW9s1pBjYukesS9TFuF4YkhA=',
+    expectedLines: [
+      { account: 'tATcZuublbCXkPND.vf8gj6XE/4IRiOVxTiIIsm/rO+w=', debit: 'uvmP+4WWlbgKVyqb.K1ngl2ag3UiJXtF3D/GxNPX7XKn44w==', credit: 'ihuX8lldDQIRYfqj.CIdqk52YyhmqW8y5EJv8an8=' },
+      { account: 'dkhk4X/hLnpRoHNi.XgbMbVpWUPM7TH0HxUrZ8n3NhFw=', debit: 'zTp0lp/KHcL7Bxp0.EtxWzrruHMe2qIIVysQ87UFl4mY=', credit: 'xdmfp2B81rsQ064s.8/0/ZBxPm3mNPpL/v/IBbFA=' },
+      { account: 'ydIgn820OnUJkcL3.MB0ZpXPQaug9fmf7i2xg9yRjOdw=', debit: 'fkJHx++Z/uhpZFT3.klcbC72lPRFZyp0xB9Y95DY=', credit: 'LHm4w+ZKBeL0+AcL.Vbx6l2BpvZa6p7w1LS46jd42c7b6qNY=' }
+    ]
+  },
+  {
+    id: 'EX13', points: 2, tva: true,
+    partie: '1Gmh1BQcVt3ctRqw.d6lAd2vG2gROVBaKVThwmBobxiezjx5kHTA0VnCHn47oqGk8k4/y6Y8=',
+    text: 'JKNC6EECcCDGZyJu.TJJB5xncUPp6Upk3Bu1nDzA3iO9+g7Gjg5dvjfNReUH20K2gXqLvWDPc/CAyTaeqpTRmitwgo2+6aMM=',
+    journal: 'rzv4r70COs1SM8zZ.BWiANM9Q5BnsjspaqHEaynKd',
+    docEnc: 'btioOXf5U8t5UB3t./G/r4Bxh0mxcNlbuO/OA83im4uCE7YF5dYzpzJadkZ7xkuhrOSA2lx2KPPhs2IIIUiTapqTnPsStFli8QKd1BnABhb2oKsaZ6S5865x3doUXFFQII177g117ZJVUuGoz7wTAWmT9OEgSUVq73Et+RgARneXzwRjz2kceSQd3NdgQWzIv+/fpsDvsC6OQJxZSQ2l+i3uSiqfNynQ70Ri5SmcZ+kH8MokPGPSe6liWjPkAODIHbjqP018IKbMylo6ZLnMwfJeelTQTIiUHH4RGnpHdOhzpQ2EIpbUmRR4vanfkbPHm5rmkhAQqC34pTGOLPUScprzNJa++c1WYk1zXJtMnmirYidhu71/AAMA7ChNp7hHTj076A9YtEaRDl3LZWYInFgIDsppiGE1UnkYrHLmKPX9DmbytufWAzOGqimkJgRU2Ot8vyy9FyTkNVYV3MR8pWGeu1afCza+pQ8Z+C3XqyUc4ctvfjH/p5yMPE3mldm/NsTZLdXMDqg==',
+    expectedLines: [
+      { account: 'SQxkh+WFsBfdPwjq.Am+TJ9ty5ymHLLGzwDuwwG/c3lk=', decl: 'bqRxFPOTP+48ICkZ.+4MDScX6odTb9oPUZfAc4g==', code: 'xqYw0b08jXfa+h31.RjSmVWOVma7mO94ckXMCZQ==', debit: 'ct74A9L8EOwjp4yV.lC1TdI727Y8T33haqcYMhE4GCoVaAQ==', credit: 'qhsr36jjHg6WG5F4.dU623BwoNyzgLglnXssF8U8=' },
+      { account: 'TKZgh4ZLIk98DcY2.JR7DvRZrR7jWRFRX24qv8hbwmnU=', decl: 'wp4e6TCFgdRgbAJm.k3rdUN5Aq5eG9x2D/6UW4emY', code: '+dbARZ1vk7qdoPRt.XYaSwNvdTRAQiK0KcNC0DUA=', debit: 'ddSRoAdyNr6I/p7a.z/j+CX3Kgmfb2XKcEDJiysM=', credit: 'ljH+9BHKJTbpCE4f.QjIV5xYBEsNgqCeVf2UHhzBp3IYjwA==' },
+      { account: 'eTRvNl15MkpYp4l1.Yx2JFJqAfQIXzhvkmlieAXTJDvc=', decl: '+TLLW46kaiGfwI6l.AkH+8qHWt53ksg6TWgTrR1zV', code: '6M50kEhkKAPhTglJ.7tpgq3wa2ItsePXYpD6UrQ==', debit: '66x2Z+IVr0SE4xrn.f2im98monETiGyf94Am0TAI=', credit: 'yLw+FOioUoF89eCe.Rg8BBxgrKI01zeb349ayaNVJyXIQ' }
+    ]
+  },
+  {
+    id: 'EX14', points: 1, tva: false,
+    partie: 'teqXzuWCkZI1/i9P.cMoS07kZlZcwBJpnuCqKJSzchu+nIwVWxamnhrc+l2WU1Btf4i+uzSTOlYr2naqZE5GXcdRzccA=',
+    text: '3lpUV4QsjsS0o51y.CdMmLzyqhJVV5jMjABqkM4jxHWTkSheaa5vsnPKBSxqlFBDCBhte7A3g',
+    journal: 'J0F+LEB6XkDfnSJF.9SztKUpkbjC6R30+LVD2gYfk',
+    docEnc: 'fYou7PYwZTBJfLHp.76mb2hwzZdr3fxup8CW1rAaGKSevDKYlNQHJeFT/ZWni8SOGn9BS7+4PBmwonJvbUEsAqw/hAsBJBXWmYBPfMk6AGgu54RWlrTn/pLAneTA+KjFNpXKfw/JXCUx09dPhcoL38lZ64bXM9+1k47sBwrJzyjlVs9/6iIQohs8v5VWCUMeFAZe5kquvECNuW2rLqNw9rKdOhaFg9s6Qt3IbGJr+lu6y',
+    expectedLines: [
+      { account: 'zHOxnfr8zvUbgQgC.nzmmLwZMYXAzxAYUB64udBZIF3Y=', debit: 'vpLqODhVl1je9EjX.MU3rIarjQsfY/Y25D5MCX6Z9+WZwGA==', credit: 'MUL0bmp1P/mqtwXU.qDAzVxbjIp6Ew6suiwCa/YE=' },
+      { account: 'NmvOIGlJYhC7Kxr4.AIZqPbXjnj1Lz95hhIdAIFxtSco=', debit: 'gqcb2s61p6znL6P7.jQbVpUVk4s5t8QUnJlJewys=', credit: 'PpUGDBC83yABVns5.ZuGY9ll2QBsYpZQDNFRNJD7f8wg3xw==' }
+    ]
+  },
+  {
+    id: 'EX15', points: 1, tva: true,
+    partie: 'a/4C+1K6h+n/XxXq.5B8uFstjQonE3mp5/SUbp1GnQvjleiB2zxp2xQ6aDdjHPUbrmfVb8DT1/TV9KmU2h78VQZ7RMdYgGeS1G4MS',
+    text: 'PEOmc8C3E+CS6uXk.+FwJEbT+aJEouWJHlCEq1QQHbX9K4Gm++4yjJq7f/k+9DXALdQYTMss=',
+    journal: 'PSbx8hWZxT3/OnK+.QZCzMkQU5XeFfJPE3ba3A1ux',
+    docEnc: 'luOCOwU31v+VKsYH.cgKAoOlvZIyEAW9+qzYMjgJxMFzk2AcDUwI+8TyL+H8NSIiCkI1zrxL6YMfdNSN8qOksM33j20NvFG1n4W6G3ZAk2q423dr42p3clhdYGofCl9xIle/PrEsyIeKPlTdhsLvQivyU1lD3r2H0KXDnsbqQmz1TdBwt7qQQiLz3Cz9EAhuG95TfwmQaAji6rzjXoHNt+iJrq/VpWnSTpJxh44S4X82YQb0PfKu3PDV0kpg5AC5xC8jXYGfS5vOVIcSf1nyGH1Fx70V6yhIL6khWLXePiJyyQTa/UX/kPGSSl1ij7sLk1KIWCXeIe/+5JNHQ3rBjAM4s79ftt+S3jkxckN4zyXd9L4FEaNc5eHMMjdGwT5ok9AfjfyXyG6z+ohOgBSfKBvFLLM0oyfO6RM12Pzjlww3Qm6ArMYbxNWNWOJgEOJlRbdOQtBOnszJiVY5xCHVES82zhgMnuWoxxd6ZN37Q+LO0EfPgPPYf1OsMgNgOCyMZtKs1Xb6TQTrSWZ2YeCUUVxv2vaTMOfyk5deTHs6d0iui27g88cY9p6rmuuhaZE5KhvEg9NkJ3r5C3g3aaY0BqmaEgGwUBoWtnyFuugxrMgO1z3abP7RhKgA7Vqgcabg+CrGSE8REg8wsTD3hXaL8FRCHy1jTlnr1TWxdKmuj6pR7Z6R7ULkZWUWxu4lyoFcZzKgsj1qGDzyEP0rsKAKlBPFNxuWG3lPXsv8lRhAg5cUha+aTIl1wlno9B3GKEScfHdU+J2S0QLUbQWlDNSf17DJ5enMDAAInzLZVBXSgbWWj551DrE/dV1qGdbkRew8MNtUQF6i7GpsfTSB5AtGn2EoiUDAjfUjUbP5m92Ooavr4VpMVjRRhtZGGbYlx',
+    expectedLines: [
+      { account: 'YaGYHXejzaUHYQxF.W1VhBN+s8BkhMvn5gskkNSeT0d4=', decl: '6HllsovInjP0CmDZ.nxRFVhXsWgxPQT/eBRYb94+K', code: 'HvIgTkCYa28xRsbi.b6opiI/7fb9waG7uP/QG2dDXhXnRjDIM', debit: 'BTDw/JST6BTNfM6Q.zqh+ufY19NYZSaffBmaZQF35aw==', credit: 'XpN4qwSeKlPvUxo4.1F/AvD2WmR05hKlvEhdU9FU=' },
+      { account: 'HMhLWZlgiqM4KLhZ.BW62UBo9EGaYLHVvyp1p2FDlHIQ=', decl: 'F3GgGlSKicZwdW38.iyTFb+DhHDSXY5xS0Wnmng==', code: 'qUx+v9rScIP9EkJN.KlgJPP/zUHEw5BQILPNyCQ==', debit: 'eAZEIS1c+2ZIlfzl.up0dfHGxhun+JIBcJWi1UGg=', credit: 'z9Dz/U7AIBCJQuZO.qcvBiEkWpu9Q8STqqQ0jnHp5sA==' }
+    ]
+  },
+  {
+    id: 'EX16', points: 2, tva: true,
+    partie: 'SwUM+cF4w/xPv+KT.T0XVITUgbp+m4bPmPvNOtz/3uDNt7yjLwtsGCamjzAOrp3BTRN8+AL2cG6Ttj70MVDQBKWTa3Fg=',
+    text: 'gI0jOyQwaDKwocJj.G/Hs4NeGjOWIYkfNmxIfqLCdfidWr42OgjDORGf/JomdyOJ4Wqza01o=',
+    journal: 'poCThmKYAEfz099E.c1cdXaGMlaN0ZID4vVs3JQy6',
+    docEnc: 'pxQMc/QyMLC4YWAO.o+ZoGT604BosfJyPhA4Z3jLXWV+fZgD/OXKiOAEFhmytI0Wrj0k3zyJ5iOcxW6FxNC5iirw0Mzgzs4rRC3i8OnnrHJysZC2UQAhIW/q1IERHTqUOHjMvBQZLM8iSQEd6wZQTYuPDshFOfYqGz0ZTBW+CfqmvIR/gQYriODkDBcpydrURrlpdnmBdg3M42HaFRibZDsVm2oE6vupSTxyL+I2QHuEJLMRG8PvtX9yIn+pq9oMuz4TM39JmcafI3GKv5mLUVL9xs75Y5UcJ7Lg2F+fMbpTuEw3PWyCszfH5j5AdN5uaxJ0lv/zYa3v9N7ZjDGYryr5HZz2Bi14jy7REt8MDRi+RQR5DRvvDICXo0GdyBfjCwUG04p+AobjX5LR8yTS8Qdfxr7xlPR4QlI/M6/hd+AFKA9vWtL8LCTAwigWl+4awRLtx9csaahOFTVqwPDCpFNz3p5vFlgDH+Gd0GCTri8BH6S997DYNHSRWy7Ka3usoXrq0dN/0pWxc16NmB+2xCPSz6nJIynQs7MpjEDMRzF5IL++n/ZHnJ2GWtlan2fm1gi/q19kVKBIzh7dRK1ZJ6ZiOkD6fl6lbQuHJ8gi72zbP9lsOlxfI+j3cgKwGPTWIiIxDTOo/Ha6UTWwX0NgayVIXI4J8KvP2/POVyVe8l9N0ORkHAfC4AhLmPVawtDXz+sQJViFTrjhjxuhtXYmsgTQK81f7ZAvtGPn1Xsm2oKG/Ssbw+y1o9I4Gp/5ne1OJEb0BPq9UhoKodgb9NdX9+9E942qAHn8aVuFuVqPRRiYU+gTvtcBayHPMn1y2Got+mIAfcSJvDUUZSciMysTFH/DROUSp013ox153DbrqIScLZcx3Ql1ml2vI1lXCgnQXvcinLVPLYBken9ll7NfQ2NmQF5pKQDh0TwZHzXJfpU5V5mXEdxbvpN9a8aelB/tcK9D2HZLuYHfM7G1d2w5ZEhxJbnWyC6zfRd/9AXhuvghGNd9WJA==',
+    expectedLines: [
+      { account: 'LGSE1FrF8Ljs3+gg.CKCm6l50E6ipdGQgtQcVdA2gnt4=', decl: 'I7um5JcEpmsb8z1/.IfdrzzulBcaF/LuxQl0xWHa5', code: 'i1GAgq1A+k4q8jxZ.RmEp6/l+UlQAA05ohsZazhgdpaA=', debit: '9C4uZCmhe1FJDeO0.f9CiYYrIAUZdhgUSggLKqmUc7M7nDd4=', credit: 'pNQE6mz2EHxZ6txB.4OUqr3HIZx4eWfAch7ITmAk=' },
+      { account: '3AnhelTNmSR71DSj./7/nWPpnXF8nxr95cj5gnKv78zw=', decl: '4oIDkU4m6Y+4WrTL.W2820mFFdDpmkq6Fm5bkyDvN', code: 'p5ey1C9Zux5ez62/.np8begBF46gJBr6N70nq9Q==', debit: 'f6KweYyxfi5pw090.4vIgYOayoAb9WExSaQjRJ+ANlgFL2Q==', credit: '07Wa8/QFnelF6t3P.Fnd5rkFCdm/fV92UNLyX5Cw=' },
+      { account: 'Pkx9Jf2tXWx44dp/.axSgUYmaFkOUQTLAScy/kC+IpQo=', decl: 'wLBWdo/NolWkiCYl.G/3lpg6s/NBEvWntqZWcyA==', code: '0KL8YyaECPBaTemy.PdMd+h+W9POAOc/0ZDOzcQ==', debit: '0vVQrazyfZ2CrSd/.dNc9l0xDyb9ApDw79uP3YIs=', credit: 'jep2+35+xvnHalel.bZULHQgMj4F6+jdbsD6KQdNyljW45Bw=' }
+    ]
+  }
+];
+
+const JOURNAUX = [
+  { k:'JA',  n:"JA — Journal des Achats" },
+  { k:'JV',  n:"JV — Journal des Ventes" },
+  { k:'NCA', n:"NCA — Notes de Crédit sur Achats" },
+  { k:'NCV', n:"NCV — Notes de Crédit sur Ventes" },
+  { k:'JF',  n:"JF — Journal Financier (banque)" },
+  { k:'JC',  n:"JC — Journal de Caisse" },
+  { k:'JOD', n:"JOD — Journal des Opérations Diverses" }
+];
+const JNAMES = {};
+JOURNAUX.forEach(j => JNAMES[j.k] = j.n);
+
+// ============================================================
+// COMMUNICATION GOOGLE SHEET
+// ============================================================
+function jsonp(params) {
+  return new Promise((resolve, reject) => {
+    const cbName = 'cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+    window[cbName] = function(data) {
+      resolve(data);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    };
+    const qs = Object.entries(params).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+    const script = document.createElement('script');
+    script.src = `${CONFIG.SCRIPT_URL}?callback=${cbName}&${qs}`;
+    script.onerror = () => { reject(new Error('Erreur réseau')); delete window[cbName]; };
+    document.body.appendChild(script);
+  });
+}
+
+function postData(payload) {
+  return fetch(CONFIG.SCRIPT_URL, {
+    method: 'POST', mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  });
+}
+
+// ============================================================
+// DÉCHIFFREMENT AES-GCM (Web Crypto API)
+// ============================================================
+async function importKey(hexKey) {
+  const keyBytes = new Uint8Array(hexKey.match(/.{1,2}/g).map(b => parseInt(b, 16)));
+  return await window.crypto.subtle.importKey('raw', keyBytes, 'AES-GCM', false, ['decrypt']);
+}
+
+async function decryptText(encrypted, cryptoKey) {
+  if (encrypted === null || encrypted === undefined) return encrypted;
+  const [ivB64, cipherB64] = encrypted.split('.');
+  const iv = Uint8Array.from(atob(ivB64), c => c.charCodeAt(0));
+  const cipher = Uint8Array.from(atob(cipherB64), c => c.charCodeAt(0));
+  const decrypted = await window.crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, cryptoKey, cipher);
+  return new TextDecoder().decode(decrypted);
+}
+
+async function decryptAllData(cryptoKey) {
+  // === Questions générales ===
+  for (let q of QUIZ) {
+    q.text = await decryptText(q.text, cryptoKey);
+    q.options = await Promise.all(q.options.map(o => decryptText(o, cryptoKey)));
+  }
+
+  // === Consignes de la phase suivante ===
+  const ulPopsy = document.getElementById('ulPopsy');
+  if (ulPopsy) ulPopsy.innerHTML = await decryptText(CONSIGNES_UL_ENC, cryptoKey);
+  CONSIGNE_PRINT = await decryptText(CONSIGNE_PRINT_ENC, cryptoKey);
+
+  // === Écritures ===
+  for (let ex of EXERCISES) {
+    ex.partie = await decryptText(ex.partie, cryptoKey);
+    ex.text = await decryptText(ex.text, cryptoKey);
+    ex.journal = await decryptText(ex.journal, cryptoKey);
+
+    // Le document (facture, extrait, note) tient lieu de contexte : JSON chiffré
+    if (ex.docEnc) ex.doc = JSON.parse(await decryptText(ex.docEnc, cryptoKey));
+
+    if (ex.options) ex.options = await Promise.all(ex.options.map(o => decryptText(o, cryptoKey)));
+    if (ex.answer !== undefined && ex.answer !== null) {
+      ex.answer = parseFloat(await decryptText(ex.answer, cryptoKey));
+    }
+    if (ex.answers) {
+      ex.answers = await Promise.all(ex.answers.map(async a => parseFloat(await decryptText(a, cryptoKey))));
+    }
+    if (ex.expectedLines) {
+      for (let line of ex.expectedLines) {
+        if (typeof line.account === 'string') {
+          line.account = await decryptText(line.account, cryptoKey);
+        } else if (Array.isArray(line.account)) {
+          line.account = await Promise.all(line.account.map(a => decryptText(a, cryptoKey)));
+        }
+        if (line.decl !== undefined) line.decl = await decryptText(line.decl, cryptoKey);
+        if (line.code !== undefined) line.code = await decryptText(line.code, cryptoKey);
+        if (line.codeAlt) line.codeAlt = await Promise.all(line.codeAlt.map(c => decryptText(c, cryptoKey)));
+        if (line.debit !== undefined && line.debit !== null) {
+          line.debit = parseFloat(await decryptText(String(line.debit), cryptoKey));
+        }
+        if (line.credit !== undefined && line.credit !== null) {
+          line.credit = parseFloat(await decryptText(String(line.credit), cryptoKey));
+        }
+      }
+    }
+  }
+}
+
+// ============================================================
+// OUTILS
+// ============================================================
+function parseAmount(raw) {
+  if (raw === null || raw === undefined) return NaN;
+  const s = String(raw).trim().replace(/\s/g, '').replace(/,/g, '.');
+  if (s === '') return NaN;
+  const n = parseFloat(s);
+  return isNaN(n) ? NaN : n;
+}
+function amt(v) { const n = parseAmount(v); return isNaN(n) ? 0 : n; }
+function eur(n) {
+  const neg = n < 0; const [e, d] = Math.abs(n).toFixed(2).split('.');
+  return (neg ? '-' : '') + e.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ',' + d;
+}
+function fmtTime(sec) {
+  const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+  return [h, m, s].map(v => String(v).padStart(2, '0')).join(':');
+}
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function normAcc(s) { return String(s || '').replace(/[^0-9]/g, ''); }
+// prenom.nom@istlm.org  ->  { prenom:'Prénom', nom:'NOM' }
+function identiteDepuisEmail(email) {
+  const local = String(email || '').split('@')[0];
+  if (!local) return { prenom:'', nom:'' };
+  const cap = t => t.split(/([-'])/).map(x => /^[-']$/.test(x) ? x
+    : x.charAt(0).toUpperCase() + x.slice(1).toLowerCase()).join('');
+  const parts = local.split(/[._]+/).filter(Boolean);
+  if (!parts.length) return { prenom:'', nom:'' };
+  return {
+    prenom: cap(parts[0]),
+    nom: parts.slice(1).map(cap).join(' ').toUpperCase()
+  };
+}
+function declKey(s) {
+  const t = String(s || '').toUpperCase().replace(/[\s.]/g, '').replace(/[—–]/g, '');
+  if (t === '' || t === '-') return '';
+  return t.split('+').filter(Boolean).sort().join('+');
+}
+function codeKey(s) {
+  const t = String(s || '').toUpperCase().replace(/[\s._-]/g, '').replace(/[—–]/g, '');
+  return (t === '') ? '' : t;
+}
+function show(id) {
+  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+function updateProgress() {
+  const total = CONFIG.NB_QUIZ + CONFIG.NB_EXERCICES;
+  const done = STATE.quizAnswered.filter(Boolean).length + STATE.exAnswered.filter(Boolean).length;
+  document.getElementById('progBar').style.width = (done / total * 100) + '%';
+}
+function startTimer() {
+  STATE.startTime = Date.now();
+  STATE.timerInterval = setInterval(() => {
+    STATE.elapsed = Math.floor((Date.now() - STATE.startTime) / 1000);
+    document.getElementById('hdrTimer').textContent = fmtTime(STATE.elapsed);
+  }, 1000);
+}
+function questionTime() {
+  const t = Math.round((Date.now() - STATE.questionStartTime) / 1000);
+  return t < 0 ? 0 : t;
+}
+
+// ============================================================
+// RENDU DES DOCUMENTS
+// ============================================================
+function party(p, label, right) {
+  return `<div class="doc-party${right ? ' right' : ''}">
+    <div class="doc-party-lab">${label}</div>
+    <div class="doc-party-name">${esc(p.nom)}</div>
+    ${p.adr.map(a => `<div>${esc(a)}</div>`).join('')}
+    <div class="doc-tva">${esc(p.tva)}</div>
+  </div>`;
+}
+
+function renderDoc(d) {
+  if (!d) return '';
+
+  if (d.type === 'note') {
+    return `<div class="doc"><div class="doc-head">${esc(d.titre)}</div>
+      <div class="doc-body"><div class="doc-note">${d.html}</div></div></div>`;
+  }
+
+  if (d.type === 'ext') {
+    const ops = d.ops.map(o => `<tr>
+        <td>${esc(o.d)}</td><td>${esc(o.lib)}</td>
+        <td class="num">${esc(o.mt)}</td></tr>`).join('');
+    return `<div class="doc"><div class="doc-head">${esc(d.titre || 'Extrait de compte')} n° ${esc(d.num)}</div>
+      <div class="doc-body">
+        <div class="doc-meta"><div>Compte à vue : <b>${esc(d.compte)}</b></div><div>Titulaire : <b>${esc(d.titulaire || '')}</b></div></div>
+        <table class="doc-tbl" style="margin-top:10px">
+          <tr class="tot"><td colspan="2">Ancien solde au ${esc(d.ancD)}</td><td class="num">${esc(d.ancS)}</td></tr>
+          <tr><th style="width:20%">Date</th><th>Libellé</th><th style="width:22%;text-align:right">Montant</th></tr>
+          ${ops}
+          <tr class="pay"><td colspan="2">Nouveau solde au ${esc(d.nouD)}</td><td class="num">${esc(d.nouS)}</td></tr>
+        </table>
+      </div></div>`;
+  }
+
+  // facture / note de crédit
+  const isVente = d.sens === 'vente';
+  const lignes = d.lignes.map(l => `<tr>
+      <td class="num">${esc(l.q)}</td><td>${esc(l.des)}</td>
+      <td class="num">${esc(l.pu)}</td><td class="num">${esc(l.mt)}</td></tr>`).join('');
+  const rem = (d.rem || []).map(r => `<tr>
+      <td></td><td>${esc(r.lib)}</td><td></td><td class="num">${esc(r.mt)}</td></tr>`).join('');
+  const esc2 = d.escompte ? `<tr><td colspan="3">${esc(d.escompte.lib)}</td>
+      <td class="num">${esc(d.escompte.base)}</td></tr>` : '';
+  const tva = (d.tva || []).map(t => `<tr>
+      <td colspan="2">T.V.A. ${esc(t.taux)} sur ${esc(t.base)}</td>
+      <td></td><td class="num">${esc(t.mt)}</td></tr>`).join('');
+
+  return `<div class="doc">
+    <div class="doc-head">${isVente ? 'Facture de vente' : "Facture d'achat"} n° ${esc(d.num)}</div>
+    <div class="doc-body">
+      <div class="doc-parties">
+        ${party(d.de, 'Émetteur')}
+        ${party(d.a, 'Destinataire', true)}
+      </div>
+      <div class="doc-meta">
+        <div>Date : <b>${esc(d.date)}</b></div>
+        <div>Échéance : <b>${esc(d.ech)}</b></div>
+        <div>N° : <b>${esc(d.num)}</b></div>
+      </div>
+      <table class="doc-tbl">
+        <tr><th style="width:12%">Quantité</th><th>Libellé</th><th style="width:18%;text-align:right">P.U.</th><th style="width:20%;text-align:right">Montant</th></tr>
+        ${lignes}${rem}
+        <tr class="tot"><td colspan="3">Total hors T.V.A.</td><td class="num">${esc(d.ht)}</td></tr>
+        ${esc2}${tva}
+        <tr class="pay"><td colspan="3">À payer</td><td class="num">${esc(d.pay)}</td></tr>
+      </table>
+      ${d.legal ? `<div class="doc-legal">${esc(d.legal)}</div>` : ''}
+      ${(d.mentions || []).length ? `<div class="doc-meta">${d.mentions.map(m => `<div>${esc(m)}</div>`).join('')}</div>` : ''}
+    </div></div>`;
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+document.getElementById('startBtn').addEventListener('click', doLogin);
+document.getElementById('emailInput').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+// ============================================================
+// SHUFFLE — randomise l'ordre des options (partie 1 uniquement)
+// ============================================================
+function shuffleOptions(arr, correctIndex) {
+  const correctText = arr[correctIndex];
+  const shuffled = arr.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return { options: shuffled, correct: shuffled.indexOf(correctText) };
+}
+
+// Appelé APRÈS decryptAllData : mélanger des options encore chiffrées
+// casserait le mapping de l'index « correct » (§9.6).
+function applyShuffles() {
+  QUIZ.forEach(q => {
+    const s = shuffleOptions(q.options, q.correct);
+    q.options = s.options;
+    q.correct = s.correct;
+  });
+  EXERCISES.forEach(ex => {
+    if (ex.type === 'qcm' && Array.isArray(ex.options) && ex.options.length > 1) {
+      const s = shuffleOptions(ex.options, ex.correct);
+      ex.options = s.options;
+      ex.correct = s.correct;
+    }
+  });
+}
+
+async function doLogin() {
+  const errBox = document.getElementById('loginError');
+  const btn = document.getElementById('startBtn');
+  const email = document.getElementById('emailInput').value.trim().toLowerCase();
+
+  errBox.classList.remove('show');
+  if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    errBox.textContent = "Merci d'encoder une adresse email valide.";
+    errBox.classList.add('show'); return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Vérification en cours…';
+
+  try {
+    // Étape 1 — check_email : vérifie le verrou, l'email, et renvoie la clé
+    const check = await jsonp({ action: 'check_email', email: email });
+
+    if (check && check.error === 'locked') { show('screenLocked'); return; }
+
+    if (!check || !check.found) {
+      errBox.textContent = "Cette adresse n'est pas reconnue. Vérifie ton email ou préviens ton professeur.";
+      errBox.classList.add('show');
+      btn.disabled = false; btn.textContent = "Commencer l'évaluation"; return;
+    }
+
+    if (!check.cle) {
+      errBox.textContent = "Erreur technique : clé absente. Préviens ton professeur.";
+      errBox.classList.add('show');
+      btn.disabled = false; btn.textContent = "Commencer l'évaluation"; return;
+    }
+
+    // Étape 1b — importer la clé, déchiffrer, puis seulement mélanger
+    try {
+      const cryptoKey = await importKey(check.cle);
+      await decryptAllData(cryptoKey);
+      applyShuffles();
+    } catch (cryptoErr) {
+      console.error(cryptoErr);
+      errBox.textContent = "Erreur technique au chargement. Préviens ton professeur.";
+      errBox.classList.add('show');
+      btn.disabled = false; btn.textContent = "Commencer l'évaluation"; return;
+    }
+
+    STATE.email = email;
+    const ident = identiteDepuisEmail(email);
+    STATE.prenom = ident.prenom;
+    STATE.nom = ident.nom;
+    STATE.classe = check.classe || '';
+
+    const access = await jsonp({ action: 'check_access', email: email, app: CONFIG.APP_NAME });
+    if (access && access.error === 'locked') { show('screenLocked'); return; }
+    if (access && access.status === 'completed') { show('screenDone'); return; }
+
+    const startRes = await jsonp({ action: 'start_eval', email: email, app: CONFIG.APP_NAME });
+    if (startRes && startRes.error === 'locked') { show('screenLocked'); return; }
+
+    postData({
+      action: 'register_app',
+      application: CONFIG.APP_NAME,
+      nb_quiz: CONFIG.NB_QUIZ,
+      nb_exercices: CONFIG.NB_EXERCICES,
+      points_max: CONFIG.POINTS_MAX
+    });
+
+    STATE.session = new Date().toISOString();
+    document.getElementById('hdrEmail').textContent =
+      ((STATE.nom || STATE.prenom) ? (STATE.nom + ' ' + STATE.prenom).trim() + ' — ' : '')
+      + STATE.email + (STATE.classe ? ' — ' + STATE.classe : '');
+    document.getElementById('mainHeader').style.display = 'block';
+    startTimer();
+    show('screenQuiz');
+    renderQuiz();
+
+  } catch (e) {
+    errBox.textContent = "Connexion impossible. Vérifie ta connexion internet puis réessaie.";
+    errBox.classList.add('show');
+    btn.disabled = false; btn.textContent = "Commencer l'évaluation";
+  }
+}
+
+// ============================================================
+// PARTIE 1 — QUESTIONS GÉNÉRALES
+// ============================================================
+let selectedQuizOption = null;
+
+function renderQuiz() {
+  const q = QUIZ[STATE.currentQuiz];
+  selectedQuizOption = null;
+  STATE.questionStartTime = Date.now();
+
+  const letters = ['A', 'B', 'C', 'D'];
+  const opts = q.options.map((o, i) =>
+    `<div class="qcm-option" data-idx="${i}" onclick="selectQuizOption(${i})">
+       <div class="qcm-letter">${letters[i]}</div><div>${esc(o)}</div></div>`).join('');
+
+  document.getElementById('quizCard').innerHTML = `
+    <div class="q-points">${q.points} pts</div>
+    <div class="q-num">Partie 1 — Question ${STATE.currentQuiz + 1} / ${CONFIG.NB_QUIZ}</div>
+    <div class="q-text">${esc(q.text)}</div>
+    <div class="qcm-list">${opts}</div>
+    <div class="feedback" id="quizFeedback"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="quizValidate" onclick="validateQuiz()" disabled>Valider ma réponse</button>
+      <button class="btn btn-ghost" id="quizNext" onclick="nextQuiz()" style="display:none">Question suivante</button>
+    </div>`;
+  updateProgress();
+}
+
+function selectQuizOption(i) {
+  if (STATE.quizAnswered[STATE.currentQuiz]) return;
+  selectedQuizOption = i;
+  document.querySelectorAll('#quizCard .qcm-option').forEach(el => {
+    el.classList.toggle('selected', Number(el.dataset.idx) === i);
+  });
+  document.getElementById('quizValidate').disabled = false;
+}
+
+function validateQuiz() {
+  if (selectedQuizOption === null || STATE.quizAnswered[STATE.currentQuiz]) return;
+  const q = QUIZ[STATE.currentQuiz];
+  const isCorrect = selectedQuizOption === q.correct;
+  const points = isCorrect ? q.points : 0;
+  const timeTaken = questionTime();
+
+  STATE.quizAnswered[STATE.currentQuiz] = true;
+  STATE.quizPoints += points;
+
+  document.querySelectorAll('#quizCard .qcm-option').forEach(el => el.classList.add('locked'));
+  const fb = document.getElementById('quizFeedback');
+  fb.className = 'feedback show ' + (isCorrect ? 'ok' : 'ko');
+  fb.textContent = isCorrect ? '✓ Réponse correcte.' : '✗ Réponse incorrecte.';
+
+  document.getElementById('quizValidate').style.display = 'none';
+  const nextBtn = document.getElementById('quizNext');
+  nextBtn.style.display = 'inline-flex';
+  nextBtn.textContent = (STATE.currentQuiz === CONFIG.NB_QUIZ - 1) ? 'Terminer la partie 1' : 'Question suivante';
+
+  postData({
+    action: 'submit_answer', email: STATE.email, classe: STATE.classe,
+    application: CONFIG.APP_NAME, volet: 'Quiz',
+    partie: `Quiz — ${q.id}`, question: q.text,
+    reponse_eleve: q.options[selectedQuizOption], reponse_correcte: q.options[q.correct],
+    points: points, points_max: q.points, tentative: 1,
+    temps_secondes: timeTaken, session: STATE.session
+  });
+  updateProgress();
+}
+
+function nextQuiz() {
+  if (STATE.currentQuiz < CONFIG.NB_QUIZ - 1) { STATE.currentQuiz++; renderQuiz(); }
+  else finishQuiz();
+}
+
+function finishQuiz() {
+  postData({
+    action: 'submit_answer', email: STATE.email, classe: STATE.classe,
+    application: CONFIG.APP_NAME, volet: 'Quiz',
+    partie: 'TOTAL — Quiz', question: '', reponse_eleve: '', reponse_correcte: '',
+    points: STATE.quizPoints, points_max: CONFIG.POINTS_QUIZ, tentative: 1,
+    temps_secondes: STATE.elapsed, session: STATE.session
+  });
+  show('screenTransition');
+}
+
+document.getElementById('toExBtn').addEventListener('click', () => { show('screenExercise'); renderExercise(); });
+
+// ============================================================
+// PARTIE 2 — PRÉIMPUTATIONS
+// ============================================================
+function renderEntryTable(ex) {
+  const n = ex.expectedLines.length;
+  const tva = !!ex.tva;
+  let rows = '';
+  for (let i = 0; i < n; i++) {
+    rows += `<tr>
+      <td><input type="text" class="entry-account" data-line="${i}" placeholder="Compte" autocomplete="off"></td>
+      ${tva ? `<td><input type="text" class="entry-decl" data-line="${i}" placeholder="—" autocomplete="off"></td>
+               <td><input type="text" class="entry-code" data-line="${i}" placeholder="—" autocomplete="off"></td>` : ''}
+      <td><input type="text" class="entry-debit num" data-line="${i}" placeholder="0,00" autocomplete="off" oninput="updateTotals()"></td>
+      <td><input type="text" class="entry-credit num" data-line="${i}" placeholder="0,00" autocomplete="off" oninput="updateTotals()"></td>
+    </tr>`;
+  }
+
+  const journalHTML = `
+    <div class="journal-block">
+      <label for="journalSelect">Journal utilisé :</label>
+      <select id="journalSelect" class="journal-select">
+        <option value="">— Choisis le journal —</option>
+        ${JOURNAUX.map(j => `<option value="${j.k}">${esc(j.n)}</option>`).join('')}
+      </select>
+    </div>`;
+
+  return `${journalHTML}
+    <table class="entry-table">
+      <colgroup>
+        <col class="c-acc">${tva ? '<col class="c-decl"><col class="c-code">' : ''}
+        <col class="c-amt"><col class="c-amt">
+      </colgroup>
+      <thead><tr>
+        <th>N° de compte</th>
+        ${tva ? '<th>Décl. T.V.A.</th><th>Code Popsy</th>' : ''}
+        <th class="r">Débit</th><th class="r">Crédit</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="totline"><span id="totD">Débit 0,00</span><span id="totC">Crédit 0,00</span></div>
+    <div class="entry-hint">Comptes à 4 chiffres. Point ou virgule acceptés pour les décimales.${tva ? ' Les colonnes Décl. T.V.A. et Code Popsy restent vides sur les lignes qui ne portent ni grille ni code.' : ''}</div>`;
+}
+
+function updateTotals() {
+  let d = 0, c = 0;
+  document.querySelectorAll('.entry-debit').forEach(i => d += amt(i.value));
+  document.querySelectorAll('.entry-credit').forEach(i => c += amt(i.value));
+  const dEl = document.getElementById('totD'), cEl = document.getElementById('totC');
+  if (!dEl) return;
+  dEl.textContent = 'Débit ' + eur(d);
+  cEl.textContent = 'Crédit ' + eur(c);
+  const eq = Math.abs(d - c) < 0.005 && d > 0;
+  dEl.style.color = cEl.style.color = eq ? 'var(--green)' : 'var(--slate-mid)';
+}
+
+function readEntry(ex) {
+  const rows = [];
+  for (let i = 0; i < ex.expectedLines.length; i++) {
+    const a = document.querySelector(`.entry-account[data-line="${i}"]`);
+    const de = ex.tva ? document.querySelector(`.entry-decl[data-line="${i}"]`) : null;
+    const co = ex.tva ? document.querySelector(`.entry-code[data-line="${i}"]`) : null;
+    const dr = document.querySelector(`.entry-debit[data-line="${i}"]`);
+    const cr = document.querySelector(`.entry-credit[data-line="${i}"]`);
+    rows.push({
+      i: i,
+      compte: (a ? a.value : '').trim(),
+      decl: de ? de.value.trim() : '',
+      code: co ? co.value.trim() : '',
+      debit: amt(dr ? dr.value : ''),
+      credit: amt(cr ? cr.value : '')
+    });
+  }
+  const sel = document.getElementById('journalSelect');
+  return { journal: sel ? sel.value.trim() : '', rows: rows };
+}
+
+// Correction ligne par ligne, ordre des lignes libre.
+// Statuts : ok | tva | montant | compte | vide
+function correctEntry(ex, saisie) {
+  const exp = ex.expectedLines.map(l => Object.assign({}, l, { used: false }));
+  const res = saisie.rows.map(r => ({ i: r.i, status: 'vide' }));
+
+  // 1er passage : correspondance parfaite (compte + montants)
+  saisie.rows.forEach((r, k) => {
+    if (!r.compte && !r.debit && !r.credit) { res[k].status = 'vide'; return; }
+    let hit = -1;
+    for (let e = 0; e < exp.length; e++) {
+      if (exp[e].used) continue;
+      const acc = Array.isArray(exp[e].account)
+        ? exp[e].account.some(a => normAcc(a) === normAcc(r.compte))
+        : normAcc(exp[e].account) === normAcc(r.compte);
+      if (!acc) continue;
+      const okD = Math.abs(r.debit - exp[e].debit) <= 0.01;
+      const okC = Math.abs(r.credit - exp[e].credit) <= 0.01;
+      if (okD && okC) { hit = e; break; }
+      if (hit === -1) hit = -2 - e;   // compte trouvé, montant faux (mémorisé)
+    }
+    if (hit >= 0) {
+      exp[hit].used = true;
+      res[k].status = 'ok';
+      res[k].exp = hit;
+    }
+  });
+
+  // 2e passage : compte correct mais montant faux, ou compte inconnu
+  saisie.rows.forEach((r, k) => {
+    if (res[k].status !== 'vide') return;
+    if (!r.compte && !r.debit && !r.credit) return;
+    let found = -1;
+    for (let e = 0; e < exp.length; e++) {
+      if (exp[e].used) continue;
+      const acc = Array.isArray(exp[e].account)
+        ? exp[e].account.some(a => normAcc(a) === normAcc(r.compte))
+        : normAcc(exp[e].account) === normAcc(r.compte);
+      if (acc) { found = e; break; }
+    }
+    if (found >= 0) { exp[found].used = true; res[k].status = 'montant'; res[k].exp = found; }
+    else res[k].status = 'compte';
+  });
+
+  // 3e passage : grille de déclaration et code Popsy
+  if (ex.tva) {
+    saisie.rows.forEach((r, k) => {
+      if (res[k].status !== 'ok') return;
+      const e = exp[res[k].exp];
+      const declOk = declKey(r.decl) === declKey(e.decl || '');
+      const codes = (e.codeAlt || [e.code || '']).map(codeKey);
+      const codeOk = codes.indexOf(codeKey(r.code)) !== -1;
+      if (!declOk || !codeOk) {
+        res[k].status = 'tva';
+        res[k].declOk = declOk;
+        res[k].codeOk = codeOk;
+      }
+    });
+  }
+
+  const journalOk = saisie.journal === ex.journal;
+  const manquantes = exp.filter(e => !e.used).length;
+  const totD = saisie.rows.reduce((s, r) => s + r.debit, 0);
+  const totC = saisie.rows.reduce((s, r) => s + r.credit, 0);
+  const equilibre = Math.abs(totD - totC) < 0.005 && totD > 0;
+  const allOk = journalOk && manquantes === 0 && res.every(r => r.status === 'ok');
+
+  return { correct: allOk, journalOk, manquantes, equilibre, lignes: res, totD, totC };
+}
+
+function paintEntry(ex, corr) {
+  const sel = document.getElementById('journalSelect');
+  if (sel) { sel.classList.remove('err', 'good'); sel.classList.add(corr.journalOk ? 'good' : 'err'); }
+  corr.lignes.forEach(r => {
+    const acc = document.querySelector(`.entry-account[data-line="${r.i}"]`);
+    const de = document.querySelector(`.entry-decl[data-line="${r.i}"]`);
+    const co = document.querySelector(`.entry-code[data-line="${r.i}"]`);
+    const dr = document.querySelector(`.entry-debit[data-line="${r.i}"]`);
+    const cr = document.querySelector(`.entry-credit[data-line="${r.i}"]`);
+    [acc, de, co, dr, cr].forEach(el => { if (el) el.classList.remove('err', 'good'); });
+    if (r.status === 'ok') {
+      [acc, de, co, dr, cr].forEach(el => { if (el) el.classList.add('good'); });
+    } else if (r.status === 'tva') {
+      if (acc) acc.classList.add('good');
+      if (dr) dr.classList.add('good');
+      if (cr) cr.classList.add('good');
+      if (de) de.classList.add(r.declOk ? 'good' : 'err');
+      if (co) co.classList.add(r.codeOk ? 'good' : 'err');
+    } else if (r.status === 'montant') {
+      if (acc) acc.classList.add('good');
+      if (dr) dr.classList.add('err');
+      if (cr) cr.classList.add('err');
+    } else if (r.status === 'compte') {
+      if (acc) acc.classList.add('err');
+    } else {
+      if (acc) acc.classList.add('err');
+    }
+  });
+}
+
+function messagesFor(corr) {
+  const msg = [];
+  if (!corr.journalOk) msg.push("Le journal sélectionné n'est pas celui qu'appelle ce document.");
+  corr.lignes.forEach(r => {
+    const n = r.i + 1;
+    if (r.status === 'compte') msg.push(`Ligne ${n} : ce compte n'intervient pas dans cette écriture.`);
+    else if (r.status === 'montant') msg.push(`Ligne ${n} : le compte est correct, mais le montant ou son sens (débit / crédit) ne l'est pas.`);
+    else if (r.status === 'tva') {
+      if (!r.declOk && !r.codeOk) msg.push(`Ligne ${n} : la grille de déclaration et le code Popsy sont à revoir.`);
+      else if (!r.declOk) msg.push(`Ligne ${n} : la grille de déclaration n'est pas la bonne.`);
+      else msg.push(`Ligne ${n} : le code Popsy n'est pas le bon.`);
+    } else if (r.status === 'vide') msg.push(`Ligne ${n} : ligne incomplète.`);
+  });
+  if (corr.manquantes > 0 && !corr.lignes.some(r => r.status === 'compte'))
+    msg.push(`Il manque ${corr.manquantes} ligne${corr.manquantes > 1 ? 's' : ''} à cette écriture.`);
+  if (!corr.equilibre) msg.push("L'écriture n'est pas équilibrée : total débit ≠ total crédit.");
+  return msg;
+}
+
+function entryToString(ex, saisie) {
+  const parts = saisie.rows.map(r => {
+    let s = (r.compte || '?');
+    if (ex.tva) s += ` [${r.decl || '-'}/${r.code || '-'}]`;
+    s += ` D:${r.debit || 0} C:${r.credit || 0}`;
+    return s;
+  });
+  return `[${saisie.journal || '?'}] ` + parts.join(' | ');
+}
+
+function expectedToString(ex) {
+  const parts = ex.expectedLines.map(l => {
+    const a = Array.isArray(l.account) ? l.account.join('/') : l.account;
+    let s = a;
+    if (ex.tva) s += ` [${l.decl || '-'}/${l.code || '-'}]`;
+    s += ` D:${l.debit} C:${l.credit}`;
+    return s;
+  });
+  return `[${ex.journal}] ` + parts.join(' | ');
+}
+
+function renderExercise() {
+  const ex = EXERCISES[STATE.currentEx];
+  STATE.questionStartTime = Date.now();
+
+  document.getElementById('exCard').innerHTML = `
+    <div class="q-points">${ex.points} pt${ex.points > 1 ? 's' : ''}</div>
+    <div class="q-num">Partie 2 — Écriture ${STATE.currentEx + 1} / ${CONFIG.NB_EXERCICES}</div>
+    <div class="q-partie">${esc(ex.partie)}</div>
+    ${renderDoc(ex.doc)}
+    <div class="q-text">${esc(ex.text)}</div>
+    ${renderEntryTable(ex)}
+    <div class="feedback" id="exFeedback"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="exValidate" onclick="validateExercise()">Vérifier mon écriture</button>
+      <button class="btn btn-ghost" id="exSkip" onclick="skipExercise()">Passer cette écriture</button>
+      <button class="btn btn-primary" id="exNext" onclick="nextExercise()" style="display:none">Écriture suivante</button>
+      <span class="attempts" id="exAttemptsInfo"></span>
+    </div>`;
+  updateTotals();
+  updateProgress();
+}
+
+function lockExInputs() {
+  document.querySelectorAll('#exCard input').forEach(i => i.disabled = true);
+  document.querySelectorAll('#exCard select').forEach(s => s.disabled = true);
+  document.querySelectorAll('.qcm-option').forEach(el => el.classList.add('locked'));
+}
+
+function validateExercise() {
+  const ex = EXERCISES[STATE.currentEx];
+  if (STATE.exAnswered[STATE.currentEx]) return;
+
+  const saisie = readEntry(ex);
+  const corr = correctEntry(ex, saisie);
+
+  STATE.exAttempts[STATE.currentEx]++;
+  const attempt = STATE.exAttempts[STATE.currentEx];
+  const points = corr.correct ? ex.points : 0;
+
+  STATE.exSaisie[STATE.currentEx] = saisie;
+  paintEntry(ex, corr);
+
+  postData({
+    action: 'submit_answer', email: STATE.email, classe: STATE.classe,
+    application: CONFIG.APP_NAME, volet: 'Exercice',
+    partie: ex.partie, question: ex.text,
+    reponse_eleve: entryToString(ex, saisie), reponse_correcte: expectedToString(ex),
+    points: points, points_max: ex.points, tentative: attempt,
+    temps_secondes: questionTime(), session: STATE.session
+  });
+
+  const fb = document.getElementById('exFeedback');
+  if (corr.correct) {
+    STATE.exAnswered[STATE.currentEx] = true;
+    STATE.exPoints += ex.points;
+    STATE.exResult[STATE.currentEx] = 'ok';
+    fb.className = 'feedback show ok';
+    fb.innerHTML = `✓ Écriture correcte — ${ex.points} point${ex.points > 1 ? 's' : ''}.`;
+    lockExInputs();
+    document.getElementById('exValidate').style.display = 'none';
+    document.getElementById('exSkip').style.display = 'none';
+    const nextBtn = document.getElementById('exNext');
+    nextBtn.style.display = 'inline-flex';
+    nextBtn.textContent = (STATE.currentEx === CONFIG.NB_EXERCICES - 1) ? "Terminer l'évaluation" : 'Écriture suivante';
+  } else {
+    const msg = messagesFor(corr);
+    fb.className = 'feedback show ko';
+    fb.innerHTML = `✗ L'écriture n'est pas encore juste.<ul>${msg.map(m => `<li>${esc(m)}</li>`).join('')}</ul>`;
+    document.getElementById('exAttemptsInfo').textContent = `Tentative ${attempt}`;
+  }
+  updateProgress();
+}
+
+function skipExercise() {
+  const ex = EXERCISES[STATE.currentEx];
+  if (STATE.exAnswered[STATE.currentEx]) return;
+
+  const saisie = readEntry(ex);
+  STATE.exSaisie[STATE.currentEx] = saisie;
+  STATE.exAttempts[STATE.currentEx]++;
+  STATE.exAnswered[STATE.currentEx] = true;
+  STATE.exResult[STATE.currentEx] = 'skip';
+
+  postData({
+    action: 'submit_answer', email: STATE.email, classe: STATE.classe,
+    application: CONFIG.APP_NAME, volet: 'Exercice',
+    partie: ex.partie, question: ex.text,
+    reponse_eleve: '[Passé]', reponse_correcte: expectedToString(ex),
+    points: 0, points_max: ex.points, tentative: STATE.exAttempts[STATE.currentEx],
+    temps_secondes: questionTime(), session: STATE.session
+  });
+
+  lockExInputs();
+  const fb = document.getElementById('exFeedback');
+  fb.className = 'feedback show neutral';
+  fb.textContent = 'Écriture passée — 0 point. Elle figurera sur ton impression avec la mention « passée ».';
+  document.getElementById('exValidate').style.display = 'none';
+  document.getElementById('exSkip').style.display = 'none';
+  const nextBtn = document.getElementById('exNext');
+  nextBtn.style.display = 'inline-flex';
+  nextBtn.textContent = (STATE.currentEx === CONFIG.NB_EXERCICES - 1) ? "Terminer l'évaluation" : 'Écriture suivante';
+  updateProgress();
+}
+
+function nextExercise() {
+  if (STATE.currentEx < CONFIG.NB_EXERCICES - 1) { STATE.currentEx++; renderExercise(); }
+  else finishEvaluation();
+}
+
+// ============================================================
+// FINALISATION
+// ============================================================
+function finishEvaluation() {
+  const totalPoints = STATE.quizPoints + STATE.exPoints;
+  const totalTime = STATE.elapsed;
+
+  postData({
+    action: 'submit_answer', email: STATE.email, classe: STATE.classe,
+    application: CONFIG.APP_NAME, volet: 'Exercice',
+    partie: 'TOTAL — Exercices', question: '', reponse_eleve: '', reponse_correcte: '',
+    points: STATE.exPoints, points_max: CONFIG.POINTS_EXERCICES, tentative: 1,
+    temps_secondes: totalTime, session: STATE.session
+  });
+
+  postData({
+    action: 'submit_answer', email: STATE.email, classe: STATE.classe,
+    application: CONFIG.APP_NAME, volet: 'Évaluation',
+    partie: 'TOTAL — Évaluation', question: '', reponse_eleve: '', reponse_correcte: '',
+    points: totalPoints, points_max: CONFIG.POINTS_MAX, tentative: 1,
+    temps_secondes: totalTime, session: STATE.session
+  });
+
+  postData({ action: 'complete_eval', email: STATE.email, app: CONFIG.APP_NAME });
+
+  if (STATE.timerInterval) clearInterval(STATE.timerInterval);
+
+  document.getElementById('totalScore').textContent = totalPoints;
+  document.getElementById('quizScore').textContent = `${STATE.quizPoints} / ${CONFIG.POINTS_QUIZ}`;
+  document.getElementById('exScore').textContent = `${STATE.exPoints} / ${CONFIG.POINTS_EXERCICES}`;
+  document.getElementById('totalTime').textContent = fmtTime(totalTime);
+  document.getElementById('progBar').style.width = '100%';
+
+  buildPrintout();
+  show('screenSummary');
+}
+
+// ============================================================
+// IMPRESSION — documents + écritures de l'élève
+// ============================================================
+function saisieTable(ex, saisie) {
+  if (!saisie) return '<div class="pr-note">Aucune saisie encodée.</div>';
+  const tva = !!ex.tva;
+  const rows = saisie.rows.map(r => `<tr>
+      <td>${esc(r.compte || '')}</td>
+      ${tva ? `<td>${esc(r.decl || '')}</td><td>${esc(r.code || '')}</td>` : ''}
+      <td class="num">${r.debit ? eur(r.debit) : ''}</td>
+      <td class="num">${r.credit ? eur(r.credit) : ''}</td></tr>`).join('');
+  const totD = saisie.rows.reduce((s, r) => s + r.debit, 0);
+  const totC = saisie.rows.reduce((s, r) => s + r.credit, 0);
+  return `<div class="pr-note"><b>Journal :</b> ${esc(JNAMES[saisie.journal] || saisie.journal || '—')}</div>
+    <table class="pr-tbl">
+      <tr><th>N° de compte</th>${tva ? '<th>Décl. T.V.A.</th><th>Code Popsy</th>' : ''}<th style="text-align:right">Débit</th><th style="text-align:right">Crédit</th></tr>
+      ${rows}
+      <tr><td${tva ? ' colspan="3"' : ''}><b>Totaux</b></td><td class="num"><b>${eur(totD)}</b></td><td class="num"><b>${eur(totC)}</b></td></tr>
+    </table>`;
+}
+
+function buildPrintout() {
+  const total = STATE.quizPoints + STATE.exPoints;
+  const d = new Date();
+  const dateStr = String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+
+  let html = `
+    <div class="pr-h1">Évaluation — achats, ventes, financiers et opérations diverses</div>
+    <div class="pr-sub">Préimputations et Popsy — dossier OUTISUD — Institut Saint-Luc Frameries</div>
+    <table class="pr-id">
+      <tr><td class="k">Nom</td><td>${esc(STATE.nom || '')}</td>
+          <td class="k">Prénom</td><td>${esc(STATE.prenom || '')}</td></tr>
+      <tr><td class="k">Classe</td><td>${esc(STATE.classe || '')}</td>
+          <td class="k">Durée</td><td>${fmtTime(STATE.elapsed)}</td></tr>
+      <tr><td class="k">Email</td><td>${esc(STATE.email)}</td>
+          <td class="k">Date</td><td>${dateStr}</td></tr>
+      <tr><td class="k">Questions générales</td><td>${STATE.quizPoints} / ${CONFIG.POINTS_QUIZ}</td>
+          <td class="k">Préimputations</td><td>${STATE.exPoints} / ${CONFIG.POINTS_EXERCICES}</td></tr>
+      <tr><td class="k">Total</td><td colspan="3"><b>${total} / ${CONFIG.POINTS_MAX}</b></td></tr>
+    </table>
+    <div class="pr-note"><b>À faire ensuite dans Popsy :</b> ${CONSIGNE_PRINT}</div>`;
+
+  EXERCISES.forEach((ex, i) => {
+    const st = STATE.exResult[i];
+    const badge = st === 'ok' ? 'CORRECTE' : (st === 'skip' ? 'PASSÉE' : 'NON VALIDÉE');
+    const pts = st === 'ok' ? ex.points : 0;
+    html += `<div class="pr-item">
+      <div class="pr-item-h"><span>${i + 1}. ${esc(ex.partie)}</span>
+        <span class="pr-badge">${badge} — ${pts}/${ex.points}</span></div>
+      <div class="pr-item-b">
+        ${renderDoc(ex.doc)}
+        ${saisieTable(ex, STATE.exSaisie[i])}
+      </div></div>`;
+  });
+
+  document.getElementById('printArea').innerHTML = html;
+}
+
+document.getElementById('printBtn').addEventListener('click', () => {
+  buildPrintout();
+  window.print();
+});
+</script>
+</body>
+</html>
